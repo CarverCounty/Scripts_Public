@@ -1,7 +1,7 @@
 NWF.FormFiller.Events.RegisterAfterReady(function(){
 	var result = [];
 	var depts = [deptHHS,deptPublicServices,deptPublicWorks,deptSheriff,deptER,deptCourt,deptFinance,deptAdmin,deptATNY,deptBoard];
-	for (var x=0;x<depts.length;x++){calcDepts(result,depts[x]);}
+	for (var x=0;x<depts.length;x++){calcDepts(result,depts[x],depts);}
 	NWF$('#' + SelectAllDepts).change(function() {
 		NWF$('.divs input').prop('checked',NWF$(this).prop('checked')).trigger('change');
 		checkBoxes(deptAdmin,SelectAllDepts);
@@ -20,13 +20,22 @@ NWF.FormFiller.Events.RegisterAfterReady(function(){
 	NWF$('#'+deptHHS+',#'+deptPublicServices+',#'+deptPublicWorks+',#'+deptSheriff+',#'+deptER+
 		',#'+deptCourt+',#'+deptFinance+',#'+deptAdmin+',#'+deptATNY+',#'+deptBoard).change(function(){
 		var thisID = this.id;
-		calcDepts(result,thisID);
+		calcDepts(result,thisID,depts);
 	});
 });
-function calcDepts(result,thisid){
+function calcDepts(result,thisid,depts){
+	var allIDs = '';
+	var b;
 	var strCountyUsers = '';
 	var checked = NWF$('#' + thisid.replace(/_hid$/g,'')).find('input:checked').length;
 	var total = NWF$('#' + thisid.replace(/_hid$/g,'')).find('input').length;
+	for(var a in depts){
+		if(NWF$('#' + depts[a]).val()){
+			var arr = NWF$('#' + depts[a]).val().split(';#');
+			for(b=0;b<arr.length;b+=2){allIDs += arr[b]+',';}
+		}
+	}
+	NWF$("[data-controlname='AllIDs'] input").val(allIDs.replace(/,$/g,''));
 	if(checked == total){result[thisid] = 'One Division';}
 	else if(checked == 1){result[thisid] = 'One Department';}
 	else if(checked == 0){delete result[thisid];}
