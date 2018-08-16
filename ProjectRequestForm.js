@@ -8,6 +8,12 @@ NWF.FormFiller.Events.RegisterAfterReady(function(){
 	/* Loop through all DepartmentsAffected List Lookup fields to check for selected departments on form load */
 	for (var x=0;x<depts.length;x++){calcDepts(result,depts[x],depts);}
 
+	/* Replace all List Lookup links with <span> tags using the link text - Only used in Display Mode */
+	NWF$('a[href*="RootFolder=*"]').each(function(){
+		NWF$(this).after('<span style="display:inline-block;width: 100%;">' + NWF$(this).text() + '</span>');
+		NWF$(this).remove();
+	});
+
 	/* On SelectAllDepts change, set all Division checkboxes equal to SelectAllDepts. Triggers change to cascade to Departments. */
 	NWF$('#' + SelectAllDepts).change(function() {
 		NWF$('.divs input').prop('checked',NWF$(this).prop('checked')).trigger('change');
