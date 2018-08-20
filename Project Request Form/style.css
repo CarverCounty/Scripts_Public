@@ -1,0 +1,20 @@
+/* Added to the default CSS file - DO NOT REPLACE DEFAULT */
+.goalslist input[type="checkbox"]+label{
+	width:575px;
+}
+.listlookups{
+	width:115px!important;
+}
+.depts span.nolink::before, .goalslist span.nolink::before{
+	content:"\2022  ";
+}
+.max-height-925{
+	max-height:925px;
+}
+.max-height-880{
+	max-height:880px;
+}
+.nolink{
+	display:inline-block;
+	width:100%;
+}

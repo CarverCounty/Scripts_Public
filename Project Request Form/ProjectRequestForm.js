@@ -10,7 +10,7 @@ NWF.FormFiller.Events.RegisterAfterReady(function(){
 
 	/* Replace all List Lookup links with <span> tags using the link text - Only used in Display Mode */
 	NWF$('a[href*="RootFolder=*"]').each(function(){
-		NWF$(this).after('<span style="display:inline-block;width: 100%;">' + NWF$(this).text() + '</span>');
+		NWF$(this).after('<span class="nolink">' + NWF$(this).text() + '</span>');
 		NWF$(this).remove();
 	});
 
