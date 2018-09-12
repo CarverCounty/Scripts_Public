@@ -1,0 +1,215 @@
+<html>
+	<style>
+		div#results {margin-top:25px;}
+		div#results th {text-align: left;}
+		div#results tr {border-bottom: 1px solid;}
+		div#results tr:nth-child(even) {background: #EEE;}
+		div#results tr.notAllUsers {font-weight:bold;}
+		div#results td, div#results th {padding: 10px 20px;}
+	</style>
+	<body onLoad='loadPage()'>
+		<select id='ddDiv' onchange="divDropDown(this.value)"></select> 
+		<select id='ddDept' style="visibility:hidden;"></select>
+		<button type="button" id='btnRun' 
+			onclick="retrieveProjItems(document.getElementById('ddDiv').value,
+				document.getElementById('ddDept').value)">Run
+		</button>
+		<div id='results'></div>
+	</body>
+	<script
+	  src="https://code.jquery.com/jquery-3.3.1.min.js"
+	  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	  crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		var siteUrl = '/pmo';
+
+		function loadPage() {
+			retrieveDeptItems();
+			retrieveProjItems();
+		}
+		
+		function divDropDown(val) {
+			if(!val=='') {
+				retrieveDeptItems(val);
+				var ddDept = document.getElementById("ddDept");
+				/*if(ddDept.length > 1) ddDept.style.visibility = 'visible';*/
+				ddDept.style.visibility = 'visible';
+			} else {
+				document.getElementById('ddDept').style.visibility = 'hidden';
+			}	
+		}
+		
+		function retrieveDeptItems(div) {
+			var clientContext = new SP.ClientContext(siteUrl);
+			var oList = clientContext.get_web().get_lists().getByTitle('Departments');
+			var camlQuery = new SP.CamlQuery();
+			if(div) {
+				camlQuery.set_viewXml(
+					'<View><Query>' +
+						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
+						'<Where><Eq>' +
+						'<FieldRef Name=\'Title\'/>' + 
+						'<Value Type=\'Text\'>' + div + '</Value>' +
+					'</Eq></Where></Query></View>');
+			}
+			this.collListItem = oList.getItems(camlQuery);
+			clientContext.load(collListItem);
+			clientContext.executeQueryAsync(Function.createDelegate(this, this.onDeptQuerySucceeded),
+				Function.createDelegate(this, this.onQueryFailed));
+		}
+
+		function onDeptQuerySucceeded(sender, args) {
+			var listItemEnumerator = collListItem.getEnumerator();
+			var ddDiv = document.getElementById('ddDiv');
+			var option = document.createElement('option');
+			var arrDD={};
+			var division = false;
+			
+			if(ddDiv.length == 0) { /* If ddDiv select is empty - only happens on page load */
+				option.text = 'All Divisions';
+				option.value = '';
+				ddDiv.add(option);
+				division = true;
+			} else if(ddDiv.value) {
+				var ddDept = document.getElementById('ddDept');
+				option = document.createElement('option');
+				option.text = 'Entire Division';
+				option.value = '';
+				$('#ddDept').empty()
+				ddDept.add(option);
+			}
+			
+			while (listItemEnumerator.moveNext()) {
+				var oListItem = listItemEnumerator.get_current();
+				var option = document.createElement('option');
+				if(division) {
+					option.text = oListItem.get_item('Title');
+					option.value = option.text;
+					if(!arrDD[option.text]){
+						arrDD[option.text]=option.value;
+						ddDiv.add(option);
+					}
+				} else if(ddDiv.value) {
+					option.text = oListItem.get_item('Department');
+					option.value = oListItem.get_id();
+					if(!arrDD[option.text]){
+						arrDD[option.text]=option.value;
+						ddDept.add(option);
+					}
+				}
+			}
+		}
+		
+		function retrieveProjItems(div,dept) {
+			var clientContext = new SP.ClientContext(siteUrl);
+			var oList = clientContext.get_web().get_lists().getByTitle('Project Request Form');
+			var camlQuery = new SP.CamlQuery();
+			if(div) {
+				if(dept) {
+					camlQuery.set_viewXml(
+						'<View><Query>' +
+						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
+						'<Where>' +
+							'<And>' +
+								'<And>' +
+									'<Contains>' +
+										'<FieldRef Name=\'DeptIDs\'/>' + 
+										'<Value Type=\'Text\'>' + dept + ',</Value>' +
+									'</Contains>' +
+									'<Neq>' +
+										'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+										'<Value Type=\'Text\'>Complete</Value>' +
+									'</Neq>' +
+								'</And>' + 
+								'<Eq>' +
+									'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
+									'<Value Type=\'Text\'>Approved</Value>' +
+								'</Eq>' +
+							'</And>' + 
+						'</Where></Query></View>');
+				} else {
+					var arrOptions = [];
+					var x = document.getElementById("ddDept");
+					for (var i = 0; i < x.length; i++) {
+						var y = x.options[i].value;
+						if(y) arrOptions.push(y);
+					}
+					var strQuery = '<Or>';
+					for (i = 0; i < arrOptions.length; i++) {
+						if(i > 1) strQuery = '<Or>' + strQuery;
+						strQuery +=	'<Contains>' +
+								'<FieldRef Name=\'DeptIDs\'/>' + 
+								'<Value Type=\'Text\'>' + arrOptions[i] + ',</Value>' +
+							'</Contains>';
+						if(i > 0) strQuery += '</Or>';
+					}
+					console.log(strQuery);
+					camlQuery.set_viewXml(
+						'<View><Query>' +
+						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
+						'<Where><And><And>' +
+							'<Eq>' +
+								'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
+								'<Value Type=\'Text\'>Approved</Value>' +
+							'</Eq>' +
+							'<Neq>' +
+								'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+								'<Value Type=\'Text\'>Complete</Value>' +
+							'</Neq>' +
+						'</And>' +
+							strQuery +
+						'</And></Where></Query></View>');
+				}
+			} else {
+				camlQuery.set_viewXml(
+					'<View><Query>' +
+						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
+						'<Where><And>' +
+						'<Eq>' +
+							'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
+							'<Value Type=\'Text\'>Approved</Value>' +
+						'</Eq>' +
+						'<Neq>' +
+							'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+							'<Value Type=\'Text\'>Complete</Value>' +
+						'</Neq>' +
+					'</And></Where></Query></View>');
+			
+			}
+			this.collListItem2 = oList.getItems(camlQuery);
+			clientContext.load(collListItem2);
+			clientContext.executeQueryAsync(Function.createDelegate(this, this.onProjQuerySucceeded),
+				Function.createDelegate(this, this.onQueryFailed));
+		}
+		
+		function onProjQuerySucceeded(sender, args) {
+			var listItemEnumerator = collListItem2.getEnumerator();
+			var tblResults = '<table><tr><th>Project Name</th>' + 
+				/*'<th>Primary Division</th>' + '<th>Primary Department</th>' + */
+				'<th>Project Status</th><th>Departments Affected</th></tr>';
+			
+			while (listItemEnumerator.moveNext()) {
+				var oListItem = listItemEnumerator.get_current();
+				var deptAffected = oListItem.get_item('DepartmentsAffected') || '';
+				var style = '';
+				if(deptAffected != 'All Users') style = " class='notAllUsers'"; 
+				tblResults += '<tr'+ style +'>' + 
+					'<td>' + 
+						'<a href=\'/PMO/Lists/ProjectReq/DispForm.aspx?ID=' + oListItem.get_id() + '\'>' + 
+							oListItem.get_item('Title') + 
+						'</a>' +
+					'</td>' + 
+					/*'<td>' + oListItem.get_item('PrimaryDivision') + '</td>' + 
+					'<td>' + oListItem.get_item('Department') +	'</td>' + */
+					'<td>' + oListItem.get_item('PMO_x0020_Project_x0020_Status') + '</td>' + 
+					'<td>' + deptAffected + '</td>' + 
+				'</tr>';
+			}
+			document.getElementById('results').innerHTML = tblResults;
+		}
+		
+		function onQueryFailed(sender, args) {
+			console.log('Request failed. ' + args.get_message() + '\n' + args.get_stackTrace());
+		}
+	</script>
+</html>
