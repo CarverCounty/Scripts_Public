@@ -8,6 +8,9 @@ NWF.FormFiller.Events.RegisterAfterReady(function(){
 	/* Loop through all DepartmentsAffected List Lookup fields to check for selected departments on form load */
 	for (var x=0;x<depts.length;x++){calcDepts(result,depts[x],depts);}
 
+	/* Set Project URL default link text */
+	NWF$("input[id$='Description'].sitelink").each(function(){NWF$(this).prop('value','View Site');});
+	
 	/* Replace all List Lookup links with <span> tags using the link text - Only used in Display Mode */
 	NWF$('a[href*="RootFolder=*"]').each(function(){
 		NWF$(this).after('<span class="nolink">' + NWF$(this).text() + '</span>');
@@ -59,8 +62,8 @@ function calcDepts(result,thisid,depts){
 		}
 	}
 
-	/* Store allIDs comma delimited string into 'AllIDs' Form Variable to be stored directly into List*/
-	NWF$("[data-controlname='AllIDs'] input").val(allIDs);
+	/* Store allIDs comma delimited string into 'AllIDs' Form Variable with trailing comma trimmed to be stored directly into List*/
+	NWF$("[data-controlname='AllIDs'] input").val(allIDs.replace(/,$/g,''));
 
 	/* Determine CountyUsers definition for current Division and store in result associative array with ID as key */
 	if(checked == total){result[thisid] = 'One Division';}
