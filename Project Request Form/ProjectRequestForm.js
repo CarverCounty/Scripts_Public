@@ -62,8 +62,8 @@ function calcDepts(result,thisid,depts){
 		}
 	}
 
-	/* Store allIDs comma delimited string into 'AllIDs' Form Variable with trailing comma trimmed to be stored directly into List*/
-	NWF$("[data-controlname='AllIDs'] input").val(allIDs.replace(/,$/g,''));
+	/* Store allIDs comma delimited string into 'AllIDs' Form Variable to be stored directly into List*/
+	NWF$("[data-controlname='AllIDs'] input").val(allIDs);
 
 	/* Determine CountyUsers definition for current Division and store in result associative array with ID as key */
 	if(checked == total){result[thisid] = 'One Division';}
