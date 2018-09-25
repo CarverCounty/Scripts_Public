@@ -1,13 +1,12 @@
 <html>
 	<style>
 		div#results {margin-top:25px;}
-		div#results th {text-align: left;}
 		div#results tr {border-bottom: 1px solid;}
 		div#results tr:nth-child(even) {background: #EEE;}
 		div#results tr.notAllUsers {font-weight:bold;}
-		div#results td, div#results th {padding: 10px 20px;}
+		div#results td, div#results th {padding: 10px 20px;text-align: left;}
 	</style>
-	<body onLoad='loadPage()'>
+	<body onLoad='retrieveDeptItems();retrieveProjItems();'>
 		<select id='ddDiv' onchange="divDropDown(this.value)"></select> 
 		<select id='ddDept' style="visibility:hidden;"></select>
 		<button type="button" id='btnRun' 
@@ -23,11 +22,6 @@
 	<script type="text/javascript">
 		var siteUrl = '/pmo';
 
-		function loadPage() {
-			retrieveDeptItems();
-			retrieveProjItems();
-		}
-		
 		function divDropDown(val) {
 			if(!val=='') {
 				retrieveDeptItems(val);
@@ -45,9 +39,7 @@
 			var camlQuery = new SP.CamlQuery();
 			if(div) {
 				camlQuery.set_viewXml(
-					'<View><Query>' +
-						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
-						'<Where><Eq>' +
+					'<View><Query><Where><Eq>' +
 						'<FieldRef Name=\'Title\'/>' + 
 						'<Value Type=\'Text\'>' + div + '</Value>' +
 					'</Eq></Where></Query></View>');
