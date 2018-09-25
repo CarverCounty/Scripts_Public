@@ -112,13 +112,19 @@
 						'<Where>' +
 							'<And>' +
 								'<And>' +
-									'<Contains>' +
-										'<FieldRef Name=\'DeptIDs\'/>' + 
-										'<Value Type=\'Text\'>' + dept + ',</Value>' +
-									'</Contains>' +
+									'<And>' +
+										'<Contains>' +
+											'<FieldRef Name=\'DeptIDs\'/>' + 
+											'<Value Type=\'Text\'>' + dept + ',</Value>' +
+										'</Contains>' +
+										'<Neq>' +
+											'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+											'<Value Type=\'Text\'>Complete</Value>' +
+										'</Neq>' +
+									'</And>' + 
 									'<Neq>' +
 										'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
-										'<Value Type=\'Text\'>Complete</Value>' +
+										'<Value Type=\'Text\'>Cancelled</Value>' +
 									'</Neq>' +
 								'</And>' + 
 								'<Eq>' +
@@ -147,34 +153,51 @@
 					camlQuery.set_viewXml(
 						'<View><Query>' +
 						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
-						'<Where><And><And>' +
-							'<Eq>' +
-								'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
-								'<Value Type=\'Text\'>Approved</Value>' +
-							'</Eq>' +
-							'<Neq>' +
-								'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
-								'<Value Type=\'Text\'>Complete</Value>' +
-							'</Neq>' +
-						'</And>' +
-							strQuery +
-						'</And></Where></Query></View>');
+						'<Where>'+
+							'<And>'+
+								'<And>'+
+									'<And>' +
+										'<Neq>' +
+											'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+											'<Value Type=\'Text\'>Cancelled</Value>' +
+										'</Neq>' +
+										'<Neq>' +
+											'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+											'<Value Type=\'Text\'>Complete</Value>' +
+										'</Neq>' +
+									'</And>' +
+									'<Eq>' +
+										'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
+										'<Value Type=\'Text\'>Approved</Value>' +
+									'</Eq>' +
+								'</And>' +
+								strQuery +
+							'</And>'+
+						'</Where></Query></View>');
 				}
 			} else {
 				camlQuery.set_viewXml(
 					'<View><Query>' +
 						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
-						'<Where><And>' +
-						'<Eq>' +
-							'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
-							'<Value Type=\'Text\'>Approved</Value>' +
-						'</Eq>' +
-						'<Neq>' +
-							'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
-							'<Value Type=\'Text\'>Complete</Value>' +
-						'</Neq>' +
-					'</And></Where></Query></View>');
-			
+						'<Where>'+
+							'<And>' +
+								'<And>' +
+									'<Neq>' +
+										'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+										'<Value Type=\'Text\'>Cancelled</Value>' +
+									'</Neq>' +
+									'<Neq>' +
+										'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+										'<Value Type=\'Text\'>Complete</Value>' +
+									'</Neq>' +
+								'</And>'+
+								'<Eq>' +
+									'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
+									'<Value Type=\'Text\'>Approved</Value>' +
+								'</Eq>' +
+							'</And>'+
+						'</Where>'+
+					'</Query></View>');
 			}
 			this.collListItem2 = oList.getItems(camlQuery);
 			clientContext.load(collListItem2);
