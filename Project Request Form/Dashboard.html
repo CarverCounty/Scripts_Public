@@ -1,139 +1,140 @@
 <html>
-	<style>
+	<style>	/* CSS to style the table in the 'results' div */
 		div#results {margin-top:25px;}
-		div#results tr {border-bottom: 1px solid;}
-		div#results tr:nth-child(even) {background: #EEE;}
-		div#results tr.notAllUsers {font-weight:bold;}
-		div#results td, div#results th {padding: 10px 20px;text-align: left;}
+		div#results tr {border-bottom:1px solid;}					/* Border at the bottom of every table row */
+		div#results tr:nth-child(even) {background:#EEE;}			/* Shade every other row starting with the second one */
+		div#results tr.notAllUsers {font-weight:bold;}				/* Bold text in rows that are not marked as All Users */
+		div#results td, div#results th {padding:10px 20px;text-align:left;}
 	</style>
+	<!-- On page load, call two functions to retrieve list of all Divisions and Projects -->
 	<body onLoad='retrieveDeptItems();retrieveProjItems();'>
-		<select id='ddDiv' onchange="divDropDown(this.value)"></select> 
-		<select id='ddDept' style="visibility:hidden;"></select>
-		<button type="button" id='btnRun' 
+		<!-- Division dropdown calls function to show/fill departments when selection changed -->
+		<select id='ddDiv' onchange='divDropDown(this.value)'></select> 
+		<select id='ddDept' style='visibility:hidden;'></select>
+		<!-- Button to call function for retrieving Projects based on dropdown selections -->
+		<button type='button' id='btnRun' 
 			onclick="retrieveProjItems(document.getElementById('ddDiv').value,
 				document.getElementById('ddDept').value)">Run
 		</button>
-		<div id='results'></div>
+		<div id='results'></div> <!-- Container 'div' that will be filled with results -->
 	</body>
-	<script
-	  src="https://code.jquery.com/jquery-3.3.1.min.js"
-	  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-	  crossorigin="anonymous"></script>
-	<script type="text/javascript">
-		var siteUrl = '/pmo';
+	<script type='text/javascript'>
+		var siteUrl = '/pmo';										/* Relative URL path to the parent SharePoint site */
+		var defaultQuery = 											/* Default CAML Query string for Project queries used below */
+			'<And>'+												/* You MUST understand CAML structure before modifying this string! */
+				'<And>' +
+					'<Neq>' +
+						'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+						'<Value Type=\'Text\'>Cancelled</Value>' +
+					'</Neq>' +
+					'<Neq>' +
+						'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
+						'<Value Type=\'Text\'>Complete</Value>' +
+					'</Neq>' +
+				'</And>' +
+				'<Eq>' +
+					'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
+					'<Value Type=\'Text\'>Approved</Value>' +
+				'</Eq>' +
+			'</And>';
 
-		function divDropDown(val) {
-			if(!val=='') {
-				retrieveDeptItems(val);
-				var ddDept = document.getElementById("ddDept");
-				/*if(ddDept.length > 1) ddDept.style.visibility = 'visible';*/
-				ddDept.style.visibility = 'visible';
-			} else {
-				document.getElementById('ddDept').style.visibility = 'hidden';
+		function divDropDown(div) { 								/* Function called when Division dropdown selection changed */
+			var ddDept = document.getElementById('ddDept'); 		/* Store Department dropdown object to variable */
+			if (div) { 												/* If a Division is selected */
+				retrieveDeptItems(div); 							/* Call function to retrieve selected Division's Departments */
+				/* **TESTING** Hide Department dropdown if only one result
+				if(ddDept.length > 1) ddDept.style.visibility = 'visible'; */
+				ddDept.style.visibility = 'visible'; 				/* Make Department dropdown visible now that it has values */
+			} else { 												/* If no Division selected i.e. All Divisions is selected  */
+				ddDept.style.visibility = 'hidden'; 				/* Hide Department dropdown */
 			}	
 		}
 		
-		function retrieveDeptItems(div) {
-			var clientContext = new SP.ClientContext(siteUrl);
+		function retrieveDeptItems(div) {							/* Function called to retrieve selected Division's Departments */
+			var clientContext = new SP.ClientContext(siteUrl);		/* Variables used to retrieve Departments list data from SharePoint */
 			var oList = clientContext.get_web().get_lists().getByTitle('Departments');
 			var camlQuery = new SP.CamlQuery();
-			if(div) {
+			if (div) {												/* If Division selected build CAML Query for Division's Departments */
 				camlQuery.set_viewXml(
 					'<View><Query><Where><Eq>' +
 						'<FieldRef Name=\'Title\'/>' + 
 						'<Value Type=\'Text\'>' + div + '</Value>' +
 					'</Eq></Where></Query></View>');
 			}
-			this.collListItem = oList.getItems(camlQuery);
+			this.collListItem = oList.getItems(camlQuery);			/* Run query and get results - Call functions based on success/fail */
 			clientContext.load(collListItem);
 			clientContext.executeQueryAsync(Function.createDelegate(this, this.onDeptQuerySucceeded),
 				Function.createDelegate(this, this.onQueryFailed));
 		}
 
-		function onDeptQuerySucceeded(sender, args) {
-			var listItemEnumerator = collListItem.getEnumerator();
-			var ddDiv = document.getElementById('ddDiv');
-			var option = document.createElement('option');
-			var arrDD={};
-			var division = false;
+		function onDeptQuerySucceeded(sender, args) {				/* Function called when Department query succeeds */
+			var listItemEnumerator = collListItem.getEnumerator();	/* Variable to hold query results */
+			var ddDiv = document.getElementById('ddDiv');			/* Variable to hold Division dropdown object */
+			var option = document.createElement('option');			/* Variable to hold empty <option> object for dropdowns */
+			var arrDD={};											/* Empty array variable used to ensure unique dropdown options */
+			var division = false;									/* Variable to ensure Division dropdown only populated once */
 			
-			if(ddDiv.length == 0) { /* If ddDiv select is empty - only happens on page load */
-				option.text = 'All Divisions';
+			if(ddDiv.length == 0) { 								/* If Division dropdown is empty - Only happens on page load */
+				option.text = 'All Divisions';						/* Add 'All Divisions' option to dropdown */
 				option.value = '';
 				ddDiv.add(option);
 				division = true;
-			} else if(ddDiv.value) {
-				var ddDept = document.getElementById('ddDept');
-				option = document.createElement('option');
-				option.text = 'Entire Division';
+			} else if(ddDiv.value) {								/* If Division dropdown not empty and has a Division selected */
+				var ddDept = document.getElementById('ddDept');		/* Variable to hold Department dropdown object */
+				option.text = 'Entire Division';					/* Add 'Entire Division' option to dropdown */
 				option.value = '';
-				$('#ddDept').empty()
+				ddDept.options.length = 0;
 				ddDept.add(option);
 			}
 			
-			while (listItemEnumerator.moveNext()) {
-				var oListItem = listItemEnumerator.get_current();
-				var option = document.createElement('option');
-				if(division) {
-					option.text = oListItem.get_item('Title');
+			while (listItemEnumerator.moveNext()) {					/* Loop through each query result */
+				var oListItem = listItemEnumerator.get_current();	/* Variable to hold current result */
+				var option = document.createElement('option');		/* Reset empty <option> object variable for dropdowns */
+				if(division) {										/* If 'division' variable equals 'true' - Only happens on page load */
+					option.text = oListItem.get_item('Title');		/* Get Division from 'Title' field in SharePoint list */
 					option.value = option.text;
-					if(!arrDD[option.text]){
+					if(!arrDD[option.text]){						/* If statement used to ensure no duplicate values */
 						arrDD[option.text]=option.value;
-						ddDiv.add(option);
+						ddDiv.add(option);							/* Add item to dropdown */
 					}
-				} else if(ddDiv.value) {
-					option.text = oListItem.get_item('Department');
-					option.value = oListItem.get_id();
-					if(!arrDD[option.text]){
+				} else if(ddDiv.value) {							/* If Division dropdown not empty and has a Division selected */
+					option.text = oListItem.get_item('Department');	/* Get Department from 'Department' field in SharePoint list - Set as dropdown text*/
+					option.value = oListItem.get_id();				/* Get SharePoint list item ID - Store in dropdown <option> value */
+					if(!arrDD[option.text]){						/* If statement used to ensure no duplicate values */
 						arrDD[option.text]=option.value;
-						ddDept.add(option);
+						ddDept.add(option);							/* Add item to dropdown */
 					}
 				}
 			}
 		}
 		
-		function retrieveProjItems(div,dept) {
-			var clientContext = new SP.ClientContext(siteUrl);
+		function retrieveProjItems(div,dept) {						/* Function called to retrieve Projects on page load and button click */
+			var clientContext = new SP.ClientContext(siteUrl);		/* Variables used to retrieve Project Request Form list data from SharePoint */
 			var oList = clientContext.get_web().get_lists().getByTitle('Project Request Form');
 			var camlQuery = new SP.CamlQuery();
-			if(div) {
-				if(dept) {
-					camlQuery.set_viewXml(
+			if(div) {												/* If a Division is selected */
+				if(dept) {											/* If a Department selected build CAML Query for Department's Projects */
+					camlQuery.set_viewXml(							
 						'<View><Query>' +
 						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
 						'<Where>' +
 							'<And>' +
-								'<And>' +
-									'<And>' +
-										'<Contains>' +
-											'<FieldRef Name=\'DeptIDs\'/>' + 
-											'<Value Type=\'Text\'>' + dept + ',</Value>' +
-										'</Contains>' +
-										'<Neq>' +
-											'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
-											'<Value Type=\'Text\'>Complete</Value>' +
-										'</Neq>' +
-									'</And>' + 
-									'<Neq>' +
-										'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
-										'<Value Type=\'Text\'>Cancelled</Value>' +
-									'</Neq>' +
-								'</And>' + 
-								'<Eq>' +
-									'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
-									'<Value Type=\'Text\'>Approved</Value>' +
-								'</Eq>' +
+								defaultQuery +
+								'<Contains>' +
+									'<FieldRef Name=\'DeptIDs\'/>' + 
+									'<Value Type=\'Text\'>' + dept + ',</Value>' +
+								'</Contains>' +
 							'</And>' + 
 						'</Where></Query></View>');
-				} else {
-					var arrOptions = [];
-					var x = document.getElementById("ddDept");
-					for (var i = 0; i < x.length; i++) {
+				} else {											/* If no Department selected */
+					var arrOptions = [];							/* Empty array variable to hold all Department IDs for selected Division */
+					var x = document.getElementById('ddDept');		/* Variable to hold Department dropdown object */
+					for (var i = 0; i < x.length; i++) {			/* Loop through all Departments in dropdown - Store IDs into array variable */
 						var y = x.options[i].value;
 						if(y) arrOptions.push(y);
 					}
-					var strQuery = '<Or>';
-					for (i = 0; i < arrOptions.length; i++) {
+					var strQuery = '<Or>';							/* Create variable to hold CAML Query string for all Departments in Division */
+					for (i = 0; i < arrOptions.length; i++) {		/* For each Department ID in array variable, add to CAML Query string */
 						if(i > 1) strQuery = '<Or>' + strQuery;
 						strQuery +=	'<Contains>' +
 								'<FieldRef Name=\'DeptIDs\'/>' + 
@@ -141,89 +142,58 @@
 							'</Contains>';
 						if(i > 0) strQuery += '</Or>';
 					}
-					console.log(strQuery);
-					camlQuery.set_viewXml(
+					camlQuery.set_viewXml(							/* Finalize CAML Query */
 						'<View><Query>' +
 						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
 						'<Where>'+
 							'<And>'+
-								'<And>'+
-									'<And>' +
-										'<Neq>' +
-											'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
-											'<Value Type=\'Text\'>Cancelled</Value>' +
-										'</Neq>' +
-										'<Neq>' +
-											'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
-											'<Value Type=\'Text\'>Complete</Value>' +
-										'</Neq>' +
-									'</And>' +
-									'<Eq>' +
-										'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
-										'<Value Type=\'Text\'>Approved</Value>' +
-									'</Eq>' +
-								'</And>' +
+								defaultQuery +
 								strQuery +
 							'</And>'+
 						'</Where></Query></View>');
 				}
-			} else {
+			} else {												/* If no Division (and therefore no Department) selected, build CAML Query for all */
 				camlQuery.set_viewXml(
 					'<View><Query>' +
 						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
 						'<Where>'+
-							'<And>' +
-								'<And>' +
-									'<Neq>' +
-										'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
-										'<Value Type=\'Text\'>Cancelled</Value>' +
-									'</Neq>' +
-									'<Neq>' +
-										'<FieldRef Name=\'PMO_x0020_Project_x0020_Status\'/>' + 
-										'<Value Type=\'Text\'>Complete</Value>' +
-									'</Neq>' +
-								'</And>'+
-								'<Eq>' +
-									'<FieldRef Name=\'Project_x0020_Approval_x0020_Sta\'/>' + 
-									'<Value Type=\'Text\'>Approved</Value>' +
-								'</Eq>' +
-							'</And>'+
+							defaultQuery +
 						'</Where>'+
 					'</Query></View>');
 			}
-			this.collListItem2 = oList.getItems(camlQuery);
+			this.collListItem2 = oList.getItems(camlQuery);			/* Run query and get results - Call functions based on success/fail */
 			clientContext.load(collListItem2);
 			clientContext.executeQueryAsync(Function.createDelegate(this, this.onProjQuerySucceeded),
 				Function.createDelegate(this, this.onQueryFailed));
 		}
 		
-		function onProjQuerySucceeded(sender, args) {
-			var listItemEnumerator = collListItem2.getEnumerator();
-			var tblResults = '<table><tr><th>Project Name</th>' + 
-				/*'<th>Primary Division</th>' + '<th>Primary Department</th>' + */
+		function onProjQuerySucceeded(sender, args) {				/* Function called when Project query succeeds */
+			var listItemEnumerator = collListItem2.getEnumerator();	/* Variables to hold query results and HTML table string i.e. Results */
+			var tblHTML = '<table><tr><th>Project Name</th>' + 
 				'<th>Project Status</th><th>Departments Affected</th></tr>';
 			
-			while (listItemEnumerator.moveNext()) {
-				var oListItem = listItemEnumerator.get_current();
-				var deptAffected = oListItem.get_item('DepartmentsAffected') || '';
+			while (listItemEnumerator.moveNext()) {					/* Loop through each query result */
+				var oListItem = listItemEnumerator.get_current();	/* Variable to hold query results */
+				var deptsAffected = 								/* Get 'DepartmentsAffected' field in SharePoint list */
+					oListItem.get_item('DepartmentsAffected') || '';/* OR set variable to empty string if none. (|| means OR) */
 				var style = '';
-				if(deptAffected != 'All Users') style = " class='notAllUsers'"; 
-				tblResults += '<tr'+ style +'>' + 
+				if (deptsAffected != 'All Users') {					/* If 'deptsAffected' does not equal 'All Users' add class to row */
+					style = " class='notAllUsers'";
+				}
+				tblHTML += '<tr'+ style +'>' + 						/* Build HTML table row string with query results data */
 					'<td>' + 
 						'<a href=\'/PMO/Lists/ProjectReq/DispForm.aspx?ID=' + oListItem.get_id() + '\'>' + 
 							oListItem.get_item('Title') + 
 						'</a>' +
 					'</td>' + 
-					/*'<td>' + oListItem.get_item('PrimaryDivision') + '</td>' + 
-					'<td>' + oListItem.get_item('Department') +	'</td>' + */
 					'<td>' + oListItem.get_item('PMO_x0020_Project_x0020_Status') + '</td>' + 
-					'<td>' + deptAffected + '</td>' + 
+					'<td>' + deptsAffected + '</td>' + 
 				'</tr>';
 			}
-			document.getElementById('results').innerHTML = tblResults;
+			document.getElementById('results').innerHTML = tblHTML;	/* Store HTML table string into 'results' div on page */	
 		}
 		
-		function onQueryFailed(sender, args) {
+		function onQueryFailed(sender, args) {						/* Function called when any query fails */
 			console.log('Request failed. ' + args.get_message() + '\n' + args.get_stackTrace());
 		}
 	</script>
