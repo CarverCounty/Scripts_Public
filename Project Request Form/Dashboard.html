@@ -6,7 +6,7 @@
 		div#results tr:nth-child(even) {background:#EEE;}			/* Shade every other row starting with the second one */
 		div#results tr.notAllUsers {font-weight:bold;}				/* Bold text in rows that are not marked as All Users */
 		div#results td, div#results th {padding:10px 20px;text-align:left;}
-		div#results tr:hover:not(.header) {background-color:yellow;}/* Change the row color to yellow on mouseover */
+		div#results tr:hover:not(.header) {background-color:yellow;}		/* Change the row color to yellow on mouseover */
 		div#results td {white-space:nowrap;}
 		input#filter {width:300px;padding:5px;}
 	</style>
@@ -20,8 +20,8 @@
 			onclick="retrieveProjItems(document.getElementById('ddDiv').value,
 				document.getElementById('ddDept').value)">Run
 		</button><br><br>
-		<!-- Search box to filter the table - Calls search() function each time a keypress is released -->
-		<input type='text' id='filter' onkeyup='search()' placeholder='Filter Projects by Name' title='Type a keyword'>
+		<!-- Search box to filter the table - Calls search() function each time input is detected -->
+		<input type='text' id='filter' oninput='search()' placeholder='Filter Projects by Name' title='Type a keyword'>
 		<div id='results'></div> <!-- Container 'div' that will be filled with results -->
 	</body>
 	<script type='text/javascript'>
@@ -44,7 +44,7 @@
 				'</Eq>' +
 			'</And>';
 
-		function search() {									/* Function used to filter the results table */
+		function search() {							/* Function used to filter the results table */
 			var txtFilter, tr, td, i;
 			txtFilter = document.getElementById('filter').value.toUpperCase();
 			tr = document.getElementById('tblResults').getElementsByTagName('tr');
@@ -131,6 +131,8 @@
 		}
 		
 		function retrieveProjItems(div,dept) {					/* Function called to retrieve Projects on page load and button click */
+			document.getElementById('results').innerHTML = 		/* Show progress wheel image in place of table while loading */
+				"<img src='" + siteUrl + "/SiteAssets/progress.gif'>";
 			var clientContext = new SP.ClientContext(siteUrl);		/* Variables used to retrieve Project Request Form list data from SharePoint */
 			var oList = clientContext.get_web().get_lists().getByTitle('Project Request Form');
 			var camlQuery = new SP.CamlQuery();
