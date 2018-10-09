@@ -1,9 +1,9 @@
-/* Added to the default CSS file - DO NOT REPLACE DEFAULT */
-.goalslist input[type="checkbox"]+label{
+/* Added to the default CSS file - DO NOT REPLACE DEFAULT CSS */
+.goalslist input[type="checkbox"] + label{
 	width:575px;
 }
 .listlookups{
-	width:115px!important;
+	width:125px!important;
 }
 .depts span.nolink::before, .goalslist span.nolink::before{
 	content:"\2022  ";
