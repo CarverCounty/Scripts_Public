@@ -1,4 +1,11 @@
 NWF$(document).ready(function () {
+	/* Remove invalid hours from datetime field - only show 7am - 5pm*/
+	NWF$("select[name$='Hours'] option").each(function(){
+		if(NWF$(this).val().match(/(([1-6]|12) AM)|(([6-9]|1[0-1]) PM)/g) && NWF$(this).val()!='11 AM') {
+			NWF$(this).remove();
+		}
+	});
+	
 	/* Fill all 'placeholder' attributes with each control's Help Text value */
 	NWF$('.placeholders').each(function(){
 		NWF$('#' + this.id).attr('placeholder', NWF$('#' + this.id).attr('title'));

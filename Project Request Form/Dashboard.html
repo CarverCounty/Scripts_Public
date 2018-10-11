@@ -131,7 +131,7 @@
 		}
 		
 		function retrieveProjItems(div,dept) {					/* Function called to retrieve Projects on page load and button click */
-			document.getElementById('results').innerHTML = 		/* Show progress wheel image in place of table while loading */
+			document.getElementById('results').innerHTML = 			/* Show progress wheel image in place of table while loading */
 				"<img src='" + siteUrl + "/SiteAssets/progress.gif'>";
 			var clientContext = new SP.ClientContext(siteUrl);		/* Variables used to retrieve Project Request Form list data from SharePoint */
 			var oList = clientContext.get_web().get_lists().getByTitle('Project Request Form');
