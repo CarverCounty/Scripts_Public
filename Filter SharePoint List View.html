@@ -1,0 +1,19 @@
+<!-- Simply edit the view page, add a content editor, and add this code to the Edit Source screen -->
+<input type='text' id='filter' oninput='filterList(this.value.toUpperCase())' placeholder='Filter Rows' title='Type a keyword'>
+<script>
+	function filterList(txtFilter) {
+		var tr, td, x, y;
+		tr = document.getElementsByClassName('ms-listviewtable')[0].getElementsByTagName('tr');
+		for (x = 0; x < tr.length; x++) {
+			if (tr) {
+				td = tr[x].getElementsByTagName('td');
+				for (y = 0; y < td.length; y++) {
+					if (td[y].textContent.toUpperCase().indexOf(txtFilter.toUpperCase()) > -1) {
+						tr[x].style.display = '';
+						break;
+					} else {tr[x].style.display = 'none';}
+				}
+			}
+		}
+	}
+</script>
