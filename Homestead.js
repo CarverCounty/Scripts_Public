@@ -18,7 +18,7 @@ NWF$(document).ready(function () {
 		else {ClearFields('occ2Address','occ2State','occ2County');}	
 	});
 	
-	/* Copy Occupant 1's Address to Occupant 2 on Change when Same Address Checked */
+	/* Copy Occupant 1's Address to Occupant 2 on Change(blur) when Same Address Checked */
 	NWF$('.occ1address').blur(function(){if(NWF$('#' + cpyOcc1Address).prop('checked')){SetOcc2Address();}});
 	
 	/* Clear all Occupant 2 fields when number of occupants set to 1 */
@@ -35,14 +35,14 @@ NWF$(document).ready(function () {
 		else {ClearFields('co2Address','co2State');}
 	});
 
-	/* Copy Co-Owner 1's Address to Co-Owner 2 on Change when Same Address Checked */
+	/* Copy Co-Owner 1's Address to Co-Owner 2 on Change(blur) when Same Address Checked */
 	NWF$('.co1address').blur(function(){if(NWF$('#' + cpyCoOwner1Address).prop('checked')){SetCo2Address();}});
 	
-	/* Clear all Relative Co-Owner & Lender fields when Relative Co-Owner set to No */
+	/* Clear all Relative Co-Owner fields when Relative Co-Owner set to No */
 	NWF$('#' + ddRelCoOwner).change(function(){if(NWF$('#' + ddRelCoOwner).val()=='No'){ClearFields('coowner','coownerState',null,'coownerChk');}});
 	
-	/* Clear Relative Co-Owner 1 & 2, Lender, and Occupant 1 & 2's Agree fields on I Agree Unchecked */
-	NWF$('#'+LenderAgree+', #'+RelOneAgree+', #'+RelTwoAgree+', #'+OccOneAgree+', #'+OccTwoAgree).change(function(){
+	/* Clear Relative Co-Owner 1 & 2 and Occupant 1 & 2's Agree fields on I Agree Unchecked */
+	NWF$('#'+RelOneAgree+', #'+RelTwoAgree+', #'+OccOneAgree+', #'+OccTwoAgree).change(function(){
 		if(NWF$(this).prop('checked')==false){
 			var classname;
 			switch(this.id){
@@ -51,9 +51,6 @@ NWF$(document).ready(function () {
 					break;
 				case RelTwoAgree:
 					classname = 'reltwoagree';
-					break;
-				case LenderAgree:
-					classname = 'lenderagree';
 					break;
 				case OccOneAgree:
 					classname = 'occoneagree';
