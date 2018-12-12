@@ -5,6 +5,7 @@
 			var clientContext = new SP.ClientContext(_spPageContextInfo.webServerRelativeUrl);
 			var oList = clientContext.get_web().get_lists().getByTitle('Project Statement');
 			var camlQuery = new SP.CamlQuery();
+			console.group("Brightwork Project Location Map Messages");
 			this.collListItem = oList.getItems(camlQuery);
 			clientContext.load(collListItem);
 			clientContext.executeQueryAsync(Function.createDelegate(this, this.onSucceeded),
@@ -17,18 +18,27 @@
 			while (listItemEnumerator.moveNext()) {
 				var oListItem = listItemEnumerator.get_current();
 				bwNum = oListItem.get_item('BrightWorkProjectNumber');
+				console.log("Brightwork Project Number: " + bwNum);
+				bwNum = bwNum.match(/\d+$/g);
+				console.log("Map Project Number: " + bwNum);
 			}
 			if (bwNum) {
 				document.getElementById('map').innerHTML = 
 					"<iframe src='https://gis.co.carver.mn.us/embedded_apps/pw_project_registry/project_registry.html?proj_ID=" + 
-						bwNum + "' style='width:100%;height:450px;'></iframe>";
+						bwNum + "' style='width:100%;height:450px;'></iframe><br>" + 
+						"<a href='https://gis.co.carver.mn.us/embedded_apps/pw_project_registry/project_registry.html?proj_ID=" + 
+						bwNum + "' target='_blank'>View Larger Map</a>";
 			} else {
 				document.getElementById('map').innerHTML = "Please enter a Brightwork Project Number into the Project Statement.";
 			}
+			console.groupEnd();
 		}		
 
 		function onQueryFailed(sender, args) {
-			console.log('Request failed. ' + args.get_message() + '\n' + args.get_stackTrace());
+			document.getElementById('map').innerHTML = 
+				"<div style='color:red;font-weight:bold;'>An error has occurred.<br>Please review the browser console (F12) for details.</div>";
+			console.log('Project Location Map Error: ' + args.get_message() + '\n' + args.get_stackTrace());
+			console.groupEnd();
 		}
 	</script>
 </html>
