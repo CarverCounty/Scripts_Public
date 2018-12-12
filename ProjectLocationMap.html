@@ -1,0 +1,34 @@
+<html>
+	<body onLoad='loadMap()'><div id='map'></div></body>
+	<script type='text/javascript'>
+		function loadMap() {
+			var clientContext = new SP.ClientContext(_spPageContextInfo.webServerRelativeUrl);
+			var oList = clientContext.get_web().get_lists().getByTitle('Project Statement');
+			var camlQuery = new SP.CamlQuery();
+			this.collListItem = oList.getItems(camlQuery);
+			clientContext.load(collListItem);
+			clientContext.executeQueryAsync(Function.createDelegate(this, this.onSucceeded),
+				Function.createDelegate(this, this.onQueryFailed));
+		}
+
+		function onSucceeded(sender, args) {
+			var bwNum = '';
+			var listItemEnumerator = collListItem.getEnumerator();
+			while (listItemEnumerator.moveNext()) {
+				var oListItem = listItemEnumerator.get_current();
+				bwNum = oListItem.get_item('BrightWorkProjectNumber');
+			}
+			if (bwNum) {
+				document.getElementById('map').innerHTML = 
+					"<iframe src='https://gis.co.carver.mn.us/embedded_apps/pw_project_registry/project_registry.html?proj_ID=" + 
+						bwNum + "' style='width:100%;height:450px;'></iframe>";
+			} else {
+				document.getElementById('map').innerHTML = "Please enter a Brightwork Project Number into the Project Statement.";
+			}
+		}		
+
+		function onQueryFailed(sender, args) {
+			console.log('Request failed. ' + args.get_message() + '\n' + args.get_stackTrace());
+		}
+	</script>
+</html>
