@@ -15,17 +15,18 @@
 			var oListItem = listItemEnumerator.get_current();
 			bwProjectNum = oListItem.get_item('BrightWorkProjectNumber');
 			console.log("Brightwork Project Number: " + bwProjectNum);
-			bwProjectNum = bwProjectNum.match(/\d+$/g);
-			console.log("Map Project Number: " + bwProjectNum);
 		}
 		if (bwProjectNum) {
+			bwProjectNum = bwProjectNum.match(/\d+$/g);
+			console.log("Map Project Number: " + bwProjectNum);
 			document.getElementById('locationMap').innerHTML = 
 				"<iframe src='https://gis.co.carver.mn.us/embedded_apps/pw_project_registry/project_registry.html?proj_ID=" + 
 					bwProjectNum + "' style='width:100%;height:450px;'></iframe><br>" + 
 					"<a href='https://gis.co.carver.mn.us/embedded_apps/pw_project_registry/project_registry.html?proj_ID=" + 
 					bwProjectNum + "' target='_blank'>View Larger Map</a>";
 		} else {
-			document.getElementById('locationMap').innerHTML = "Please enter a Brightwork Project Number into the Project Statement.";
+			document.getElementById('locationMap').innerHTML = 
+				"<div style='color:red;font-weight:bold;'>Please enter a Brightwork Project Number into the Project Statement.</div>";
 		}
 	}		
 
