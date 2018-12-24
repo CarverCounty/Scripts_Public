@@ -14,7 +14,7 @@
 	<body onLoad='retrieveDeptItems();retrieveProjItems();'>
 		<!-- Division dropdown calls function to show/fill departments when selection changed -->
 		<select id='ddDiv' onchange='divDropDown(this.value)'></select> 
-		<select id='ddDept' style='visibility:hidden;'></select>
+		<select id='ddDept' style='display:none;'></select>
 		<!-- Button to call function for retrieving Projects based on dropdown selections -->
 		<button type='button' id='btnRun' 
 			onclick="retrieveProjItems(document.getElementById('ddDiv').value,
@@ -61,15 +61,8 @@
 		}
 			
 		function divDropDown(div) { 						/* Function called when Division dropdown selection changed */
-			var ddDept = document.getElementById('ddDept'); 		/* Store Department dropdown object to variable */
-			if (div) { 							/* If a Division is selected */
-				retrieveDeptItems(div); 				/* Call function to retrieve selected Division's Departments */
-				/* **TESTING** Hide Department dropdown if only one result
-				if(ddDept.length > 1) ddDept.style.visibility = 'visible'; */
-				ddDept.style.visibility = 'visible'; 			/* Make Department dropdown visible now that it has values */
-			} else { 							/* If no Division selected i.e. All Divisions is selected  */
-				ddDept.style.visibility = 'hidden'; 			/* Hide Department dropdown */
-			}	
+			if (div) {retrieveDeptItems(div);}
+			else {document.getElementById('ddDept').style.display = 'none';}
 		}
 		
 		function retrieveDeptItems(div) {					/* Function called to retrieve selected Division's Departments */
@@ -101,7 +94,7 @@
 				option.value = '';
 				ddDiv.add(option);
 				division = true;
-			} else if(ddDiv.value) {					/* If Division dropdown not empty and has a Division selected */
+			} else {										/* If Division dropdown not empty */
 				var ddDept = document.getElementById('ddDept');		/* Variable to hold Department dropdown object */
 				option.text = 'Entire Division';			/* Add 'Entire Division' option to dropdown */
 				option.value = '';
@@ -128,6 +121,8 @@
 					}
 				}
 			}
+			if(document.getElementById('ddDept').length > 2) {document.getElementById('ddDept').style.display = '';}
+			else {document.getElementById('ddDept').style.display = 'none';}
 		}
 		
 		function retrieveProjItems(div,dept) {					/* Function called to retrieve Projects on page load and button click */
@@ -139,6 +134,7 @@
 			document.getElementById('filter').value = '';			/* Clear search textbox */
 			if(div) {							/* If a Division is selected */
 				if(dept) {						/* If a Department selected build CAML Query for Department's Projects */
+					console.log('Department: ' + dept);
 					camlQuery.set_viewXml(							
 						'<View><Query>' +
 						'<OrderBy><FieldRef Name=\'Score\' Ascending=\'False\'/></OrderBy>' +
@@ -147,23 +143,26 @@
 								defaultQuery +
 								'<Contains>' +
 									'<FieldRef Name=\'DeptIDs\'/>' + 
-									'<Value Type=\'Text\'>' + dept + ',</Value>' +
+									'<Value Type=\'Text\'>,' + dept + ',</Value>' +
 								'</Contains>' +
 							'</And>' + 
 						'</Where></Query></View>');
 				} else {						/* If no Department selected */
+					console.log('No Department Selected - Returning Entire Division');
 					var arrOptions = [];				/* Empty array variable to hold all Department IDs for selected Division */
 					var x = document.getElementById('ddDept');	/* Variable to hold Department dropdown object */
 					for (var i = 0; i < x.length; i++) {		/* Loop through all Departments in dropdown - Store IDs into array variable */
 						var y = x.options[i].value;
 						if(y) arrOptions.push(y);
 					}
-					var strQuery = '<Or>';				/* Create variable to hold CAML Query string for all Departments in Division */
+					console.log(arrOptions);
+					var strQuery = '';							/* Create variable to hold CAML Query string for all Departments in Division */
+					if(arrOptions.length > 1) strQuery = '<Or>';				
 					for (i = 0; i < arrOptions.length; i++) {	/* For each Department ID in array variable, add to CAML Query string */
 						if(i > 1) strQuery = '<Or>' + strQuery;
 						strQuery +=	'<Contains>' +
 								'<FieldRef Name=\'DeptIDs\'/>' + 
-								'<Value Type=\'Text\'>' + arrOptions[i] + ',</Value>' +
+								'<Value Type=\'Text\'>,' + arrOptions[i] + ',</Value>' +
 							'</Contains>';
 						if(i > 0) strQuery += '</Or>';
 					}
