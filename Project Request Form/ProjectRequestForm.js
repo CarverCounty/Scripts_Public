@@ -46,7 +46,7 @@ NWF.FormFiller.Events.RegisterAfterReady(function(){
 
 /* Function to calculate selected vs total Departments in current Division and store result into 'CountyUsers' Form Variable*/
 function calcDepts(result,thisid,depts){
-	var allIDs = '', strCountyUsers = '';
+	var allIDs = ',', strCountyUsers = '';
 	
 	/* Number of selected checkboxes in current Division */
 	var checked = NWF$('#' + thisid.replace(/_hid$/g,'')).find('input:checked').length;
