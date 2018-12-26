@@ -67,9 +67,21 @@ NWF$(document).ready(function () {
 		if(NWF$('#' + ddClass1b).val()=='No'){
 			ClearAllAttachments();
 			ClearFields('class1b',null,'class1bDD',null,'class1bBool');
-			NWF$('.legallyBlind').find(':checkbox').prop('checked',false);
+			NWF$('.legallyBlind input:checked, .docSubmission input:checked').attr('checked',false).trigger('change');
 		}
 	});
+
+	/* Clear Supporting Documents fields when Submission Type changed */
+	NWF$('#' + SSubmissionType).change(function(){
+		ClearAllAttachments();
+		NWF$('.docSubmission input:checked').attr('checked',false).trigger('change');
+	});
+
+	/* Clear Owned With and Relation to Owner fields when Property Owner field changed */
+	NWF$('#' + SOwnProperty).change(function(){ClearFields('sOwnWithRel',null,'sOwnWith');});
+	
+	/* Clear all attachments on Document Submission type change */
+	NWF$('.docSubmission input').change(function(){ClearAllAttachments();});
 });
 
 /* Function that sets Occupant 2's Address */
@@ -102,7 +114,7 @@ function ClearAllAttachments(){
 function ClearFields(txtClass, stateClass, ddClass, chkClass, boolClass){
 	if(txtClass){NWF$('.' + txtClass).val('');}
 	if(stateClass){NWF$('.' + stateClass).val('MN');}
-	if(ddClass){NWF$('.' + ddClass).val('**SelectValue**');}
+	if(ddClass){NWF$('.' + ddClass).val('**SelectValue**').trigger('change');}
 	if(chkClass){NWF$('.' + chkClass + '>input').prop('checked',false);}
 	if(boolClass){NWF$('.' + boolClass).val('No');}
 }
