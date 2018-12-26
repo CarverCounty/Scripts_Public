@@ -9,7 +9,7 @@ var nfValOptions	= [''];
 
 
 NWF.FormFiller.Events.RegisterAfterReady(function () {
-	var isDisplayMode	= document.location.pathname.indexOf("/DispForm.aspx") > -1;
+	var isDisplayMode = document.location.pathname.indexOf("/DispForm.aspx") > -1;
 	if(!isDisplayMode) {
 		SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function () { });
 		SP.SOD.executeOrDelayUntilScriptLoaded(runQueries, 'sp.js');
@@ -26,9 +26,9 @@ NWF.FormFiller.Events.RegisterAfterReady(function () {
 });
 
 function runQueries() {
-	errPoint			= 'runQueries';
+	errPoint		= 'runQueries';
 	var clientContext	= new SP.ClientContext(_spPageContextInfo.webServerRelativeUrl);
-	var oList			= clientContext.get_web().get_lists().getByTitle('Project Statement');
+	var oList		= clientContext.get_web().get_lists().getByTitle('Project Statement');
 	var camlQuery		= new SP.CamlQuery();
 	this.collListItem	= oList.getItems(camlQuery);
 	clientContext.load(collListItem);
@@ -39,18 +39,18 @@ function runQueries() {
 }
 
 function onSucceededProjStat(sender, args) {
-	errPoint = 'onSucceededProjStat';
+	errPoint		= 'onSucceededProjStat';
 	var listItemEnumerator	= collListItem.getEnumerator();
 	
 	while (listItemEnumerator.moveNext()) {
 		var oListItem	= listItemEnumerator.get_current();
-		currName		= oListItem.get_item('Title');
-		currProjNum		= oListItem.get_item('BrightWorkProjectNumber');
+		currName	= oListItem.get_item('Title');
+		currProjNum	= oListItem.get_item('BrightWorkProjectNumber');
 		console.log("BrightWork Project Number: " + currProjNum);
 	}
 	
 	var clientContext	= new SP.ClientContext(_spPageContextInfo.siteServerRelativeUrl);	
-	var oList			= clientContext.get_web().get_lists().getByTitle('Project Cache');	
+	var oList		= clientContext.get_web().get_lists().getByTitle('Project Cache');	
 	var camlQuery		= new SP.CamlQuery();	
 	camlQuery.set_viewXml(
 		'<View><Query><Where><Eq>' +
@@ -68,7 +68,7 @@ function onSucceededProjStat(sender, args) {
 }
 
 function onSucceededProjCache(sender, args) {	
-	errPoint				= 'onSucceededProjCache';
+	errPoint		= 'onSucceededProjCache';
 	var listItemEnumerator	= collListItem2.getEnumerator();
 	
 	while (listItemEnumerator.moveNext()) {
@@ -78,7 +78,7 @@ function onSucceededProjCache(sender, args) {
 	}
 	
 	var clientContext	= new SP.ClientContext(_spPageContextInfo.siteServerRelativeUrl);	
-	var oList			= clientContext.get_web().get_lists().getByTitle('Project Cache');	
+	var oList		= clientContext.get_web().get_lists().getByTitle('Project Cache');	
 	var camlQuery		= new SP.CamlQuery();	
 	camlQuery.set_viewXml(
 		'<View><Query>' +
@@ -106,16 +106,17 @@ function onSucceededProjCache(sender, args) {
 }
 
 function onSucceededSiblings(sender, args) {
-	errPoint				= 'onSucceededSiblings';
+	errPoint		= 'onSucceededSiblings';
 	var listItemEnumerator	= collListItem3.getEnumerator();
 	
 	while (listItemEnumerator.moveNext()) {
-		var oListItem = listItemEnumerator.get_current();
-		projSiteID 				= oListItem.get_id();
-		projSiteTitle			= oListItem.get_item('bwPCacheWebTitle');
+		var oListItem		= listItemEnumerator.get_current();
+		projSiteID 		= oListItem.get_id();
+		projSiteTitle		= oListItem.get_item('bwPCacheWebTitle');
 		tiedProj[projSiteID]	= {
 			'URL': oListItem.get_item('bwPCacheWebScope'),
-			'ProjNum':oListItem.get_item('BrightWorkProjectNumber')};
+			'ProjNum':oListItem.get_item('BrightWorkProjectNumber')
+		};
 		
 		idOptions.push(projSiteID);
 		txtOptions.push(projSiteTitle);
@@ -126,7 +127,7 @@ function onSucceededSiblings(sender, args) {
 	console.log(tiedProj);
 	
 	var clientContext	= new SP.ClientContext(_spPageContextInfo.webServerRelativeUrl);
-	var oList			= clientContext.get_web().get_lists().getByTitle('Tied Projects');
+	var oList		= clientContext.get_web().get_lists().getByTitle('Tied Projects');
 	var camlQuery		= new SP.CamlQuery();
 	this.collListItem4	= oList.getItems(camlQuery);
 	clientContext.load(collListItem4);
@@ -138,9 +139,9 @@ function onSucceededSiblings(sender, args) {
 
 
 function onSucceededTiedProjects(sender, args) {
-	errPoint				= 'onSucceededTiedProjects';
+	errPoint		= 'onSucceededTiedProjects';
 	var listItemEnumerator	= collListItem4.getEnumerator();
-	var tiedProjects		= [];
+	var tiedProjects	= [];
 	
 	while (listItemEnumerator.moveNext()) {
 		var oListItem = listItemEnumerator.get_current();
