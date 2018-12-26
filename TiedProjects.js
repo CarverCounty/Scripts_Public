@@ -1,7 +1,7 @@
 var errPoint		= 'Page Load';
 var parentSiteID	= '';
 var currName		= '';
-var currProjNum	= '';
+var currProjNum		= '';
 var tiedProj		= {};
 var txtOptions		= ['Select Tied Project Site'];
 var idOptions		= ['**SelectValue**'];
