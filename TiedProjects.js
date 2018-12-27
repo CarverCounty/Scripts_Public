@@ -178,5 +178,7 @@ function fillFormVars(id) {
 }
 
 function onQueryFailed(sender, args) {
+	var optionHTML = '<option value="**SelectValue**">Brightwork Project Number Required</option>';
+	NWF$('.ddlSites').empty().append(optionHTML).prop('disabled',true).css('color','red');
 	console.log('Tied Projects Error in ' + errPoint + ' function: ' + args.get_message() + '\n' + args.get_stackTrace());
 }
