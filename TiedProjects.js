@@ -46,7 +46,7 @@ function onSucceededProjStat(sender, args) {
 		var oListItem	= listItemEnumerator.get_current();
 		currName	= oListItem.get_item('Title');
 		currProjNum	= oListItem.get_item('BrightWorkProjectNumber');
-		console.log("BrightWork Project Number: " + currProjNum);
+		console.log('Current BrightWork Project: ' + currProjNum + ' - ' + currName);
 	}
 	
 	var clientContext	= new SP.ClientContext(_spPageContextInfo.siteServerRelativeUrl);	
@@ -67,10 +67,14 @@ function onSucceededProjStat(sender, args) {
 	);
 }
 
-function onSucceededProjCache(sender, args) {	
+function onSucceededProjCache(sender, args) {
+	var resultCount = collListItem2.get_count();
+	if (resultCount > 1) {
+		console.log('%cERROR: Duplicate Brightwork Project Number', 'color:red;font-weight:bold;');
+		console.log('Number of ' + currProjNum + ' Sites: %c' + resultCount, 'color:red;font-weight:bold;');
+	}
 	errPoint		= 'onSucceededProjCache';
 	var listItemEnumerator	= collListItem2.getEnumerator();
-	
 	while (listItemEnumerator.moveNext()) {
 		var oListItem	= listItemEnumerator.get_current();	
 		parentSiteID	= oListItem.get_item('bwPCacheParentWebId');	
