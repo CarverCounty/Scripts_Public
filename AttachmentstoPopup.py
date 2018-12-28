@@ -1,3 +1,8 @@
+# The following Python script can be executed to display attachments in ArcGIS Online popups.  A toolbox containing this 
+# .py script can be found in the following location: \\ch_gis\gisdata\Tasks\Tools\Models\ConvertAttachments.tbx
+
+
+
 import urllib, urllib2, json, arcpy
 
 #Parameters
