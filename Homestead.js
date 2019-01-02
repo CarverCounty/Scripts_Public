@@ -1,8 +1,9 @@
 NWF$(document).ready(function () {	
 
-	/* Set input masks for Parcel ID, Phone Number, and SSN fields (http://igorescobar.github.io/jQuery-Mask-Plugin/) */
+	/* Set input masks for Parcel ID, Phone Number, Zip, and SSN fields (http://igorescobar.github.io/jQuery-Mask-Plugin/) */
 	$('#' + PID).mask('00.0000000');
 	$('.phone').mask('(000) 000-0000');
+	$('.zip').mask('00000-9999');
 	$('.ssn').mask('000-00-0000');
 
 	/* Fill all 'placeholder' attributes with each control's Help Text value */
