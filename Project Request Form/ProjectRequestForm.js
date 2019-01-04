@@ -11,8 +11,12 @@ NWF.FormFiller.Events.RegisterAfterReady(function(){
 	/* Set Project URL default link text */
 	NWF$("input[id$='Description'].sitelink").each(function(){NWF$(this).prop('value','View Site');});
 	
+	/* Force Project Site URL to open in new tab on Display Mode */
+	var isDisplayMode = document.location.pathname.indexOf("/DispForm.aspx") > -1;
+	if (isDisplayMode) NWF$("div[data-formcontroltypeid='a0c89d70-0781-4bd4-8623-a73675005a05'] a").prop('target','_blank');
+	
 	/* Replace all List Lookup links with <span> tags using the link text - Only used in Display Mode */
-	NWF$('a[href*="RootFolder=*"]').each(function(){
+	NWF$("a[href*='RootFolder=*']").each(function(){
 		NWF$(this).after('<span class="nolink">' + NWF$(this).text() + '</span>');
 		NWF$(this).remove();
 	});
