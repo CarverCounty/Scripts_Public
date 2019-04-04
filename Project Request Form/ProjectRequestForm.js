@@ -100,3 +100,18 @@ function arrSize(arr){
 	for(key in arr){if(arr.hasOwnProperty(key)) size++;}
 	return size;
 }
+
+/* Function to validate field for special characters - Called from form rule */
+function validateProjectName(projName) {
+	console.log("Project Name: " + projName);
+
+	var projMatch = projName.match(/[^0-9a-zA-Z \-_()]+/g);
+	if(projMatch) {
+		console.log('Special Characters Found.');
+		console.log(projMatch);
+		return true;
+	} else {
+		console.log('No Special Characters Found.'); 
+		return false;
+	}
+}
