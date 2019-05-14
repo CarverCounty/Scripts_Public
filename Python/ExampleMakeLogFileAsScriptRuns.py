@@ -17,6 +17,9 @@ def printit(inString):
     tmpfile.write(thisString)
     tmpfile.close()
 
+#Whenever you want to add something to the log file, just call printit with whatever you want added to the log file.
+#The example below just adds "Start" to the log file.
+#You can pass any type of object to printit--dictionary, feature layers, paths, etc. and it should work.
 
 printit("Start")
 
