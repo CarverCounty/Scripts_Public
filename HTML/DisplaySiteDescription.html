@@ -1,0 +1,21 @@
+<!-- This code can be added to any page on a SharePoint site to display the site's description text. -->
+<script>
+       _spBodyOnLoadFunctionNames.push("GetSiteInfo");
+       var site;
+       function GetSiteInfo()
+       {
+            var ctx = new SP.ClientContext.get_current();
+            site = ctx.get_web();
+            ctx.load(site);
+            ctx.executeQueryAsync(onQuerySucceeded, onQueryFailed);
+       }
+       function onQueryFailed(sender, args) {
+            alert('request failed ' + args.get_message() + '\n' +  args.get_stackTrace());
+       }
+       function onQuerySucceeded(sender, args) {
+            var desc = document.getElementById('divSiteDescription')
+            desc.innerHTML = site.get_description();
+       }
+</script>
+
+<div id='divSiteDescription'></div>
