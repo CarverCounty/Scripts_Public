@@ -7,7 +7,7 @@ This has not been tested in any other environment.
 It requires you to copy code from the Site Contents page so that this solution can parse the data and return two bulleted lists. See example below.
 
 ## JSFiddle Resources
-Prepped JSFiddle Page: [https://jsfiddle.net/cmgj5ez0/1](https://jsfiddle.net/cmgj5ez0/1)
+Prepped JSFiddle Page: [https://jsfiddle.net/kbag2vt1/](https://jsfiddle.net/kbag2vt1/)&nbsp;&nbsp; ~~[https://jsfiddle.net/cmgj5ez0/1](https://jsfiddle.net/cmgj5ez0/1)~~
 
 If you're starting from a new JSFiddle, the [html file](html.html) contents need to be copied into the HTML pane and the [javascript file](javascript.js) contents need to be copied into the JavaScript pane. You will also need to add JQuery to the JavaScript window.
 
@@ -37,7 +37,7 @@ If you're starting from a new JSFiddle, the [html file](html.html) contents need
 
 6.	Paste the code you copied in Step 4 _after_ line 4 in the HTML pane, and enter your SharePoint domain between the quotes for the ```myDomain``` variable in the JavaScript section. 
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_*If you don't enter your SharePoint domain, the links in the results lists will not work._
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_*If you don't enter your SharePoint domain, the List and Library links will not be created in the results._
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://www.co.carver.mn.us/Home/ShowImage?id=10698)
 

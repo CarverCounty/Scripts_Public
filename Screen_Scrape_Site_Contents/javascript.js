@@ -11,20 +11,29 @@ $('#siteContents').append('<p></p><strong>LISTS & LIBRARIES</strong><br><br>');
 $('div[id].ms-vl-appinfo').each(function(){
 
 	/* Store the data in variables using jQuery */
-	var linkData = $('#' + this.id + ' .ms-vl-apptitleouter a.ms-vl-apptitle');
-	var metaData = $('#' + this.id + ' div.ms-vl-appstatus');
-  
-	/* Append a link and metadata in a list to the section on the right */	
+	var linkData	= $('#' + this.id + ' .ms-vl-apptitleouter a.ms-vl-apptitle');
+	var metaData	= $('#' + this.id + ' div.ms-vl-appstatus');
+	var objName		= '';
+
+	/* If myDomain exists */
+	if(myDomain) {
+
+		/* Create the linked name */
+		objName = '<a href=\'' + myDomain + linkData.prop('href').replace('https://fiddle.jshell.net/','') + 
+      	'\' target=\'_blank\'>' + linkData.text().trim() + '</a> - ';
+
+	/* Otherwise, if it doesn't exist */
+	} else {
+
+		/* Only add the name */
+		objName = linkData.text().trim() + ' - ';
+	}
+
+	/* Append the name, link if it exists, and metadata in a list to the section on the right */	
 	$('#siteContents').append(
 
 		/* Create the list item */
-		'<li>' + 
-    	/* Create the link */
-    	'<a href=\'' + myDomain + 
-      	linkData.prop('href').replace('https://fiddle.jshell.net/','') + 
-      	'\' target=\'_blank\'>' + 
-      		linkData.text().trim() + 
-    	'</a> - ' + 
+		'<li>' + objName +
 			
       /* Format the metadata */
 			metaData[0].innerHTML.trim() + ' - ' + 
