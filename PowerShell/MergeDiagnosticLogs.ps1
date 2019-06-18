@@ -1,6 +1,11 @@
 #Testing PowerShell script for merging SharePoint log files.
 #Features dynamic prompting and ability to specify desired start and end times.
 
+if((Get-PSSnapin "Microsoft.SharePoint.PowerShell") -eq $null)
+{
+      Add-PSSnapin Microsoft.SharePoint.PowerShell
+}
+
 DO {
 	$path = Read-Host "Your Name"
 } While (-Not $path)
