@@ -13,9 +13,9 @@ DO {
 $topic = Read-Host "Log Topic (optional)"
 
 if ($path -and $topic) {
-	$path = "E:\Merged Log Files\" + ($topic -replace '\s','') + "-" + ($path -replace '\s','') + "-" + (Get-Date -uformat %m.%d.%Y.%H%M)
+	$path = "E:\Merged Log Files\" + ($topic -replace '\s','') + "-" + ($path -replace '\s','') + "-" + (Get-Date -uformat %m.%d.%Y.%H%M) + ".log"
 } elseif ($path -and -not $topic) {
-	$path = "E:\Merged Log Files\" + ($path -replace '\s','') + "-" + (Get-Date -uformat %m.%d.%Y.%H%M)
+	$path = "E:\Merged Log Files\" + ($path -replace '\s','') + "-" + (Get-Date -uformat %m.%d.%Y.%H%M) + ".log"
 } else {
 	$path = "E:\Merged Log Files\" + "MergedLogFile" + (Get-Date -uformat %m.%d.%Y.%H%M) + ".log"
 }
