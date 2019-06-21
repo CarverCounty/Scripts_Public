@@ -58,6 +58,12 @@
 
 		/* Relative URL path to the parent SharePoint site */
 		var siteUrl = '/pmo';
+		
+		/* List's display form path relative to siteURL */
+		var displayFormPath = "/Lists/ProjectReq/DispForm.aspx";
+		
+		/* SharePoint list of projects' display name */
+		var listDisplayName = 'Project Request Form';
 
 		/* GIF image to show while list of projects is being loaded */
 		var progressGIF = '/SiteAssets/progress.gif';
@@ -206,7 +212,7 @@
 
 			/* Variables used to retrieve Divisions and Departments from 'Project Request Form' */
 			var clientContext = new SP.ClientContext(siteUrl);
-			var oList = clientContext.get_web().get_lists().getByTitle('Project Request Form');
+			var oList = clientContext.get_web().get_lists().getByTitle(listDisplayName);
 			var camlQuery = new SP.CamlQuery();
 			camlQuery.set_viewXml(
 				'<View><Query>' +
@@ -495,7 +501,7 @@
 				/* Build HTML table row string with query results data */
 				tblHTML += '<tr'+ style +'>' +
 					'<td>' +
-						"<a href='" + siteUrl + "/Lists/ProjectReq/DispForm.aspx?ID=" + oListItem.get_id() + "' target='_blank'>" +
+						"<a href='" + siteUrl + displayFormPath + "?ID=" + oListItem.get_id() + "' target='_blank'>" +
 							oListItem.get_item('Title') +
 						'</a>' +
 					'</td>' +
