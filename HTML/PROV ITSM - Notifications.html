@@ -1,0 +1,66 @@
+<div class="panel panel-default">
+ <div class="panel-heading">
+  <div class="panel-title">{% editable snippets 'ITSM/Notifications' type: 'text', default: resx["Announcements"], escape: true, tag: 'span' %}  <i class="glyphicon glyphicon-bullhorn"></i></div>
+ </div>
+
+ {% fetchxml itsmnotification_query %}
+  <fetch mapping="logical" returntotalrecordcount="true">
+   <entity name="apitil_itsmnotifications">
+    <attribute name="apitil_name" />
+    <attribute name="apitil_notificationtype" />
+    <attribute name="apitil_displaystarttime" />
+    <attribute name="apitil_displayendtime" />
+    <attribute name="apitil_itsmnotificationsid" />
+     <attribute name="apitil_urltextdisplay" />
+     <attribute name="apitil_url" />
+    <order descending="false" attribute="apitil_name" />
+    <filter type="and">
+     <condition attribute="statecode" value="0" operator="eq" />
+     <condition attribute="apitil_visibility" value="0" operator="eq" />
+    </filter>
+   </entity>
+  </fetch>
+ {% endfetchxml %}
+ {% assign notifications = itsmnotification_query.results.entities %}
+ {% if notifications %}
+    <!--List Groups-->
+   <div class="list-group">
+  {% for notification in notifications %}
+   {% if notification.apitil_notificationtype.label == 'Info' %}
+    <a href="{{notification.apitil_url}}" target="_blank" class="list-group-item list-group-item-info">
+     <p><i class="glyphicon glyphicon-info-sign"></i> {{notification.apitil_name}}</p>
+     <small class="text-muted"> {{notification.apitil_urltextdisplay}} </small>
+    </a>
+   {% endif %}
+   
+   {% if notification.apitil_notificationtype.label == 'Question' %}
+     <a href="{{notification.apitil_url}}" target="_blank" class="list-group-item list-group-item-success">
+       <p><i class="glyphicon glyphicon-question-sign"></i> {{notification.apitil_name}}</p>
+     <small class="text-muted"> {{notification.apitil_urltextdisplay}} </small>       
+        </a>    
+   {% endif %}
+   
+   {% if notification.apitil_notificationtype.label == 'Warning' %}
+     <a href="{{notification.apitil_url}}" target="_blank" class="list-group-item list-group-item-warning">
+       <p><i class="glyphicon glyphicon-alert"></i> {{notification.apitil_name}}</p>
+     <small class="text-muted"> {{notification.apitil_urltextdisplay}} </small>        
+     </a>     
+   {% endif %}
+   
+   {% if notification.apitil_notificationtype.label == 'Success' %}
+     <a href="{{notification.apitil_url}}" target="_blank" class="list-group-item list-group-item-success">
+       <p><i class="glyphicon glyphicon-alert"></i> {{notification.apitil_name}}</p>
+     <small class="text-muted"> {{notification.apitil_urltextdisplay}} </small>        
+     </a>     
+   {% endif %}
+   
+   {% if notification.apitil_notificationtype.label == 'Error' %}
+     <a href="{{notification.apitil_url}}" target="_blank" class="list-group-item list-group-item-danger">
+       <p><i class="glyphicon glyphicon-remove-sign"></i> {{notification.apitil_name}}</p>
+     <small class="text-muted"> {{notification.apitil_urltextdisplay}} </small>        
+     </a>     
+   {% endif %}
+  {% endfor %} 
+   </div>
+ {% endif %}
+</div>  
