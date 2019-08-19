@@ -32,7 +32,7 @@ NWF.FormFiller.Events.RegisterAfterReady(function () {
 		/* Get the current drop down value */
 		var id = NWF$(this).val();
 
-		/* If the value is not a project */
+		/* If a project has been selected */
 		if (id != '**SelectValue**') {
 
 			/* Set the current Error Point value, write the ID to the console, and ... */
