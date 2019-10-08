@@ -21,6 +21,7 @@
     <filter type="and">
      <condition attribute="statecode" value="0" operator="eq" />
      <condition attribute="apitil_visibility" value="0" operator="eq" />
+     <condition attribute="apitil_displayendtime" operator="on-or-after" value ='{{ "today" | date: "yyyy-MM-dd HH:mm:ss" }}' />
     </filter>
    </entity>
   </fetch>
