@@ -6,7 +6,7 @@ The [ProjectRequestForm.js](ProjectRequestForm.js) and [style.css](style.css) fi
 
 ## Dashboard
 
-The [Dashboard.html](Dashboard.html) file contains custom HTML, CSS, and JavaScript to query the SharePoint List and return results based on the Divsion and Department selected.
+The [Dashboard.html](Dashboard.html) file contains custom HTML, CSS, and JavaScript to query the SharePoint List and return results based on the Division and Department selected.
 
 ![](https://www.co.carver.mn.us/Home/ShowImage?id=10756)
 
