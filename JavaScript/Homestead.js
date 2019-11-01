@@ -16,9 +16,6 @@ NWF$(document).ready(function () {
 	/* Set all Date Picker controls to have a 100 year range into the past */
 	NWF$('.nf-date-picker').datepicker('option',{yearRange: '-100:+0',});
 	
-	/* Clear Purchase Price when Manufactured Home set to No */
-	NWF$('#' + ManufacturedHome).change(function(){ClearFields('purchaseprice');});
-	
 	/* Copy Occupant 1's Address to Occupant 2, or clear it from Occupant 2 */
 	NWF$('#' + cpyOcc1Address).change(function(){
 		if(NWF$('#' + cpyOcc1Address).prop('checked')) {SetOcc2Address();} 
