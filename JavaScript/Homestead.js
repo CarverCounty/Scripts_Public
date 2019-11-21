@@ -16,6 +16,7 @@ NWF$(document).ready(function () {
 	/* Set all Date Picker controls to have a 100 year range into the past */
 	NWF$('.nf-date-picker').datepicker('option',{yearRange: '-100:+0',});
 	
+	/* COPYING FIELD CONTENTS */
 	/* Copy Occupant 1's Address to Occupant 2, or clear it from Occupant 2 */
 	NWF$('#' + cpyOcc1Address).change(function(){
 		if(NWF$('#' + cpyOcc1Address).prop('checked')) {SetOcc2Address();} 
@@ -25,14 +26,6 @@ NWF$(document).ready(function () {
 	/* Copy Occupant 1's Address to Occupant 2 on Change(blur) when Same Address Checked */
 	NWF$('.occ1address').blur(function(){if(NWF$('#' + cpyOcc1Address).prop('checked')){SetOcc2Address();}});
 	
-	/* Clear all Occupant 2 fields when number of occupants set to 1 */
-	NWF$('#' + ddOccupants).change(function(){
-		if(NWF$('#' + ddOccupants).val()=='1'){
-			ClearFields('occ2','occ2State','occ2DD','occ2Chk');
-			NWF$('#' + occ2Date).val('');
-		}
-	});
-
 	/* Copy Co-Owner 1's Address to Co-Owner 2, or clear it from Co-Owner 2 */
 	NWF$('#' + cpyCoOwner1Address).change(function(){
 		if(NWF$('#' + cpyCoOwner1Address).prop('checked')){SetCo2Address()} 
@@ -42,6 +35,15 @@ NWF$(document).ready(function () {
 	/* Copy Co-Owner 1's Address to Co-Owner 2 on Change(blur) when Same Address Checked */
 	NWF$('.co1address').blur(function(){if(NWF$('#' + cpyCoOwner1Address).prop('checked')){SetCo2Address();}});
 	
+	/* CLEARING FIELD CONTENTS */
+	/* Clear all Occupant 2 fields when number of occupants set to 1 */
+	NWF$('#' + ddOccupants).change(function(){
+		if(NWF$('#' + ddOccupants).val()=='1'){
+			ClearFields('occ2','occ2State','occ2DD','occ2Chk');
+			NWF$('#' + occ2Date).val('');
+		}
+	});
+
 	/* Clear all Relative Co-Owner fields when Relative Co-Owner set to No */
 	NWF$('#' + ddRelCoOwner).change(function(){if(NWF$('#' + ddRelCoOwner).val()=='No'){ClearFields('coowner','coownerState',null,'coownerChk');}});
 	
@@ -88,6 +90,7 @@ NWF$(document).ready(function () {
 	NWF$('.docSubmission input').change(function(){ClearAllAttachments();});
 });
 
+/* FUNCTIONS */
 /* Function that sets Occupant 2's Address */
 function SetOcc2Address(){
 	NWF$('#' + TwoStreetAddress).val(NWF$('#' + OneStreetAddress).val());	
