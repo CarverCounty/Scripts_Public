@@ -1,0 +1,182 @@
+<!--Borrowed from Wright County, MN-->
+<head>
+	<title>Carver County E-Mail Signature Generator</title>
+<meta http-equiv="X-UA-Compatible" content="IE=11" />
+<script type="text/javascript">
+	function GenerateSigs()
+	{
+		document.getElementById('yourName').innerHTML = document.getElementById("txtName").value;
+		document.getElementById('yourJobTitle').innerHTML = document.getElementById("txtJobTitle").value;
+		document.getElementById('yourDept').innerHTML = document.getElementById("txtDepartment").value;
+		document.getElementById('yourPhone').innerHTML = document.getElementById("txtPhone").value;
+		document.getElementById('yourcell').innerHTML = document.getElementById("txtcell").value;
+		//room number - only display if the room number is not blank
+		if (document.getElementById('txtRoom').value != '')
+		{
+			str = document.getElementById("txtAddress").value;
+			//replace the "Chaska" portion of the address with "Rm ###, Chaska" ONLY if a room number exists.
+			document.getElementById('yourAddress').innerHTML = str.replace("Chaska","Room " + document.getElementById("txtRoom").value + ", Chaska");
+		}
+		else
+		{
+			document.getElementById('yourAddress').innerHTML = document.getElementById("txtAddress").value;		
+		}
+
+		//cell number - only display if the cell number is not blank
+		if (!document.getElementById('txtcell').value)
+		{
+			document.getElementById('yourcell').innerHTML = "";
+			document.getElementById('lblcell').innerHTML = "";
+			//str = document.getElementById("txtAddress").value;
+			//replace the "Chaska" portion of the address with "Rm ###, Chaska" ONLY if a room number exists.
+			//document.getElementById('yourAddress').innerHTML = str.replace("Chaska","Room " + document.getElementById("txtRoom").value + ", Chaska");
+		}
+	
+		//Minimal Sig Fields
+		document.getElementById('yourNameMin').innerHTML = document.getElementById("txtName").value;
+		document.getElementById('yourJobTitleMin').innerHTML = document.getElementById("txtJobTitle").value;
+		document.getElementById('yourPhoneMin').innerHTML = document.getElementById("txtPhone").value;
+	}
+
+    function selectElementContents(el) {
+        var body = document.body, range, sel;
+        if (document.createRange && window.getSelection) {
+            range = document.createRange();
+            sel = window.getSelection();
+            sel.removeAllRanges();
+            try {
+                range.selectNodeContents(el);
+                sel.addRange(range);
+            } catch (e) {
+                range.selectNode(el);
+                sel.addRange(range);
+            }
+            document.execCommand("copy");
+
+        } else if (body.createTextRange) {
+            range = body.createTextRange();
+            range.moveToElementText(el);
+            range.select();
+            range.execCommand("Copy");
+        }
+    }
+</script>
+
+<style> 
+input[type=text] {
+    width: 100%;
+    padding: 3px 20px;
+    margin: 2px 0;
+    box-sizing: border-box;
+    border: 3px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+
+input[type=text]:focus {
+    border: 3px solid #2870b4;
+}
+
+select #yourAddress {
+   /*background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);*/
+   background-position: 97% center;
+   background-repeat: no-repeat;
+   border: 1px solid #AAA;
+   color: #555;
+   font-size: inherit;
+   margin: 3px;
+   overflow: hidden;
+   padding: 3px 4px;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   width: 400px;
+}
+</style>
+</head>
+<body>
+
+<form>
+<table style="padding:4px 9px; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; width: 400px; background: rgba(255, 255, 255, 0.5);">
+<tr><td><input style="border:1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="50" type="text" name="txtName" id="txtName" placeholder="Your Name" /></td></tr>
+<tr><td><input style="border:1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="50" type="text" name="txtJobTitle" id="txtJobTitle" placeholder="Job Title" /></td></tr>
+<tr><td>
+<select name="txtDepartment" id="txtDepartment" style="border-radius: 4px; padding:4px 9px; background-position: 97% center; background-repeat: no-repeat; border: 1px solid grey; color: grey;
+   font-size: 10pt; margin: 2px 0px; overflow: hidden; padding: 3px 4px; text-overflow: ellipsis; white-space: nowrap; width: 100%;" placeholder= "Department">
+    <option value="">Department</option>
+	<option value="Administration">Administration</option>
+    <option value="Assessor's Office">Assessor's Office</option>
+    <option value="Attorney's Office">Attorney's Office</option>
+    <option value="Auditor/Treasurer's Office">Auditor/Treasurer's Office</option>
+    <option value="Court Administration">Court Administration</option>
+	<option value="Court Services">Court Services</option>
+	<option value="Extension Office">Extension Office</option>
+	<option value="Health & Human Services">Health & Human Services</option>
+	<option value="Highway Department">Highway Department</option>
+	<option value="Information Technology">Information Technology</option>
+	<option value="Law Library">Law Library</option>
+	<option value="Parks & Recreation">Parks & Recreation</option>
+	<option value="Planning & Zoning">Planning & Zoning</option>
+	<option value="Recorder's Office">Recorder's Office</option>
+	<option value="Sheriff's Office">Sheriff's Office</option>
+	<option value="Surveyor Department">Surveyor Department</option>
+	<option value="Veteran Services">Veteran Services</option>
+  </select></td></tr>
+<tr><td><input style="border: 1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="50" type="text" name="txtPhone" id="txtPhone" placeholder="(952) XXX-XXXX (Phone) " /></td></tr>
+<tr><td><input style="border:1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="50" type="text" name="txtcell" id="txtcell" placeholder="(952) XXX-XXXX (cell)" /></td></tr>
+<tr><td> 
+<select name="txtAddress" id="txtAddress" style="border-radius: 4px; padding:4px 9px; background-position: 97% center; background-repeat: no-repeat; border: 1px solid grey; color: grey;
+   font-size: 10pt; margin: 2px 0px; overflow: hidden; padding: 3px 4px; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+<!--    <option value="">Building</option>-->
+	<option value="600 East 4th Street, Chaska, MN 55318 ">Government Center</option>
+<!--    <option value=", 601 East 4th Street, Chaska, MN 55318 ">601</option>-->
+    <option value="602 East 4th Street, Chaska, MN 55318 ">Human Services Center</option>
+<!--    <option value=", 603 East 4th Street, Chaska, MN 55318 ">603</option>-->
+    <option value="604 East 4th Street, Chaska, MN 55318 ">Justice Center</option>
+  </select></td>
+  <tr><td><input style="border:1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="10" type="text" name="txtRoom" id="txtRoom" placeholder="Room # (optional)" /></td></tr>
+  <tr> <td colspan="2" style="text-align:center;"><input style="width: 250px; padding: 6px; margin: 6px 0px; cursor: pointer; font-weight: bold; background: #2870b4; color: white; border-radius: 4px; border: 1px solid #999; font-size: 110%;" type="button" value="Generate Signature" type="button" id="button" onclick="GenerateSigs()" /></td></tr>
+</table>
+</form>
+
+<div style="width:580px; background-color:#fff; border:0px solid black;">
+<!--WAS HERE-->
+<table id="sig" border="0px" cellspacing="0" style="min-width:300px; margin-right:0px; margin-left: auto;" cellpadding="5">
+  <tr>
+    <td style="width:100px;text-align:center;"><p style="margin-bottom:14px;"><img src="https://www.co.carver.mn.us/Home/ShowImage?id=7619" width="60" height="80" alt="Carver County, Minnesota"></p>
+      <p style="margin-top:12px;width:62px"><span style="line-height:20px;font-family:Arial;font-size:12px">
+	<a href="https://www.facebook.com/CarverCounty/"><img border="0" src="https://www.co.carver.mn.us/Home/ShowImage?id=7621" width="16" height="16" alt="Carver County on Facebook"></a>&nbsp;
+	<a href="https://twitter.com/CarverCounty"><img border="0" src="https://www.co.carver.mn.us/Home/ShowImage?id=7627" width="16" height="16" alt="Carver County on Twitter"></a>&nbsp;
+	<!--<a href="https://www.linkedin.com/company/353148/"><img border="0" src="https://www.co.carver.mn.us/Home/ShowImage?id=7623" width="16" height="16" alt="Carver County on LinkedIn"></a>&nbsp;-->
+	<a href="http://vimeo.com/channels/CarverCounty"><img border="0" src="https://www.co.carver.mn.us/Home/ShowImage?id=7629" width="16" height="16" alt="Carver County Vimeo"></a><strong> </strong></span><br>
+    </p></td>
+    <td style="width:5px;"><img src="https://www.co.carver.mn.us/Home/ShowImage?id=7625" width="5" height="108"></td>
+    <td style="width:100%;align:center;"><p style="line-height:20px;font-family:Arial;font-size:12px"><span id="yourName" style="font-weight:bold;color:#10069F;font-size:16px">
+	Your Name</span>&nbsp;&#8226;&nbsp;<span id="yourJobTitle" style="font-weight:bold;font-size:16px;">Job Title</span><br /><span style="color:#0085CA;">CARVER COUNTY, MINNESOTA</span>: <span style="text-transform:uppercase;" id="yourDept">[YOUR DEPARTMENT]</span><br />direct: 
+	<span id="yourPhone">(763) XXX-XXXX</span> &nbsp;&nbsp;&#8226;&nbsp;&nbsp; cell: 
+	<span id="yourcell">(763) XXX-XXXX</span><br>
+	<span id="yourAddress">10 2nd St NW, Rm xxx, Buffalo, MN 55313</span><br>
+        <a href="https://www.co.carver.mn.us/">www.co.carver.mn.us</a><br>
+	</td>
+  </tr>
+</table>
+</div>
+<table id="fullbutton" style="border:0px solid grey; border-top: none; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; padding:4px 9px; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; width: 600px; height: 75px;">
+<tr style="padding: 15px;"><td><p style="position: relative; left:150px;"><input style="width: 250px; padding: 6px; cursor: pointer; font-weight: bold; background: #10069F; color: white; border-radius: 4px; border: 1px solid #999; font-size: 110%;" type="button" value="Copy Full Signature" onclick="selectElementContents( document.getElementById('sig') );"></p></td></tr>
+</table>
+
+<div style="width:580px; background-color:#fff; border:0px solid black;">
+<table id="sigmin" border="0px" cellspacing="0" style="min-width:300px; margin-right: 0px; margin-left: auto;" cellpadding="5">
+  <tr>
+    <td style="text-align:center;width:40px;"><p><img src="https://www.co.carver.mn.us/Home/ShowImage?id=7619" width="22.5" height="30" alt="Carver County, Minnesota">
+	</p><td style="width:5px;">
+	<img src="https://www.co.carver.mn.us/Home/ShowImage?id=7625" width="1" height="35"></td>
+    <td style="width:100%;line-height:20px;font-family:Arial;font-size:12px"><span style="line-height:20px;font-family:Arial;font-size:12px"><span id="yourNameMin" style="color:#10069F;font-size:16px; font-weight: bold;">
+	[Your Name]</span>&nbsp;&#8226;&nbsp;<span id="yourJobTitleMin" style="font-size:16px;">[Job Title]</span>&nbsp;&#8226;&nbsp;<span id="yourPhoneMin" style="font-size:16px;">[(763) XXX-XXXX]</span>
+	</td>
+  </tr>
+</table>
+</div>
+<table id="minbutton" style="border:0px solid grey; border-top: none; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; padding:4px 9px; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; width: 600px; height: 75px;">
+<tr><td><p style="position: relative; left:150px;"><input style="width: 250px; padding: 6px; cursor: pointer; font-weight: bold; background: #10069F; color: white; border-radius: 4px; border: 1px solid #999; font-size: 110%;" type="button" value="Copy Minimal Signature" onclick="selectElementContents( document.getElementById('sigmin') );"></p></td></tr>
+</table>

@@ -1,0 +1,129 @@
+<head>
+	<title>Wright County E-Mail Signature Generator</title>
+<meta http-equiv="X-UA-Compatible" content="IE=11" />
+<script type="text/javascript">
+	function GenerateSigs()
+	{
+		document.getElementById('yourName').innerHTML = document.getElementById("txtName").value;
+		document.getElementById('yourJobTitle').innerHTML = document.getElementById("txtJobTitle").value;
+		document.getElementById('yourDept').innerHTML = document.getElementById("txtDepartment").value;
+		document.getElementById('yourPhone').innerHTML = document.getElementById("txtPhone").value;
+		document.getElementById('yourFax').innerHTML = document.getElementById("txtFax").value;
+		//room number - only display if the room number is not blank
+		if (document.getElementById('txtRoom').value != '')
+		{
+			str = document.getElementById("txtAddress").value;
+			//replace the "Buffalo" portion of the address with "Rm ###, Buffalo" ONLY if a room number exists.
+			document.getElementById('yourAddress').innerHTML = str.replace("Buffalo","Room " + document.getElementById("txtRoom").value + ", Buffalo");
+		}
+		else
+		{
+			document.getElementById('yourAddress').innerHTML = document.getElementById("txtAddress").value;		
+		}
+		
+		//Minimal Sig Fields
+		document.getElementById('yourNameMin').innerHTML = document.getElementById("txtName").value;
+		document.getElementById('yourJobTitleMin').innerHTML = document.getElementById("txtJobTitle").value;
+		document.getElementById('yourPhoneMin').innerHTML = document.getElementById("txtPhone").value;
+	}
+
+    function selectElementContents(el) {
+        var body = document.body, range, sel;
+        if (document.createRange && window.getSelection) {
+            range = document.createRange();
+            sel = window.getSelection();
+            sel.removeAllRanges();
+            try {
+                range.selectNodeContents(el);
+                sel.addRange(range);
+            } catch (e) {
+                range.selectNode(el);
+                sel.addRange(range);
+            }
+            document.execCommand("copy");
+
+        } else if (body.createTextRange) {
+            range = body.createTextRange();
+            range.moveToElementText(el);
+            range.select();
+            range.execCommand("Copy");
+        }
+    }
+</script>
+
+<style> 
+input[type=text] {
+    width: 100%;
+    padding: 3px 20px;
+    margin: 2px 0;
+    box-sizing: border-box;
+    border: 3px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+
+input[type=text]:focus {
+    border: 3px solid #2870b4;
+}
+
+select #yourAddress {
+   /*background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);*/
+   background-position: 97% center;
+   background-repeat: no-repeat;
+   border: 1px solid #AAA;
+   color: #555;
+   font-size: inherit;
+   margin: 3px;
+   overflow: hidden;
+   padding: 3px 4px;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   width: 400px;
+}
+</style>
+</head>
+<body>
+
+<form>
+<table style="padding:4px 9px; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; width: 400px; background: rgba(255, 255, 255, 0.5);">
+<tr><td><input style="border:1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="50" type="text" name="txtName" id="txtName" placeholder="Your Name" /></td></tr>
+<tr><td><input style="border:1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="50" type="text" name="txtJobTitle" id="txtJobTitle" placeholder="Job Title" /></td></tr>
+<tr><td>
+<select name="txtDepartment" id="txtDepartment" style="border-radius: 4px; padding:4px 9px; background-position: 97% center; background-repeat: no-repeat; border: 1px solid grey; color: grey;
+   font-size: 10pt; margin: 2px 0px; overflow: hidden; padding: 3px 4px; text-overflow: ellipsis; white-space: nowrap; width: 100%;" placeholder= "Department">
+    <option value="">Department</option>
+	<option value="Administration">Administration</option>
+    <option value="Assessor's Office">Assessor's Office</option>
+    <option value="Attorney's Office">Attorney's Office</option>
+    <option value="Auditor/Treasurer's Office">Auditor/Treasurer's Office</option>
+    <option value="Court Administration">Court Administration</option>
+	<option value="Court Services">Court Services</option>
+	<option value="Extension Office">Extension Office</option>
+	<option value="Health & Human Services">Health & Human Services</option>
+	<option value="Highway Department">Highway Department</option>
+	<option value="Information Technology">Information Technology</option>
+	<option value="Law Library">Law Library</option>
+	<option value="Parks & Recreation">Parks & Recreation</option>
+	<option value="Planning & Zoning">Planning & Zoning</option>
+	<option value="Recorder's Office">Recorder's Office</option>
+	<option value="Sheriff's Office">Sheriff's Office</option>
+	<option value="Surveyor Department">Surveyor Department</option>
+	<option value="Veteran Services">Veteran Services</option>
+  </select></td></tr>
+<tr><td><input style="border: 1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="50" type="text" name="txtPhone" id="txtPhone" placeholder="(763) XXX-XXXX (Phone) " /></td></tr>
+<tr><td><input style="border:1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="50" type="text" name="txtFax" id="txtFax" placeholder="(763) XXX-XXXX (Fax)" /></td></tr>
+<tr><td> 
+<select name="txtAddress" id="txtAddress" style="border-radius: 4px; padding:4px 9px; background-position: 97% center; background-repeat: no-repeat; border: 1px solid grey; color: grey;
+   font-size: 10pt; margin: 2px 0px; overflow: hidden; padding: 3px 4px; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+    <option value="">Building</option>
+	<option value="Government Center, 10 2nd St. NW, Buffalo, MN 55313">Government Center</option>
+    <option value="Law Enforcement Center, 3800 Braddock Ave NE, Buffalo, MN 55313">Law Enforcement Center</option>
+    <option value="Human Services Center, 1004 Commercial Drive, Buffalo, MN 55313">Human Services Center</option>
+    <option value="Public Works, 3500 Braddock Ave NE, Buffalo, MN 55313">Public Works</option>
+    <option value="Highway Department Building, 3600 Braddock Ave NE, Buffalo, MN 55313">Highway Department</option>
+  </select></td>
+  <tr><td><input style="border:1px solid grey; border-radius: 4px; padding:4px 9px; box-sizing: border-box;" size="10" type="text" name="txtRoom" id="txtRoom" placeholder="Room # (optional)" /></td></tr>
+  <tr> <td colspan="2" style="text-align:center;"><input style="width: 250px; padding: 6px; margin: 6px 0px; cursor: pointer; font-weight: bold; background: #2870b4; color: white; border-radius: 4px; border: 1px solid #999; font-size: 110%;" type="button" value="Generate Signature" type="button" id="button" onclick="GenerateSigs()" /></td></tr>
+</table>
+</form>
