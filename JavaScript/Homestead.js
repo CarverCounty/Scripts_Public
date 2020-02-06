@@ -4,14 +4,14 @@ NWF$(document).ready(function () {
 	$('#' + PID).mask('00.0000000');
 	$('.phone').mask('(000) 000-0000');
 	$('.zip').mask('00000-9999');
-	$('.ssn').mask('000-00-0000');
+	$('.ssn').mask('000000000');
 
 	/* Fill all 'placeholder' attributes with each control's Help Text value */
 	NWF$('.placeholders').each(function(){NWF$('#' + this.id).attr('placeholder', NWF$('#' + this.id).attr('title'));});
 	
 	/* Fill middle initial and SSN placeholder attributes with custom non-Help Text value */
 	NWF$('.middleinitial').attr('placeholder', 'MI');  
-	NWF$('.ssn').attr('placeholder', 'xxx-xx-xxxx');
+	NWF$('.ssn').attr('placeholder', 'xxxxxxxxx');
 	
 	/* Set all Date Picker controls to have a 100 year range into the past */
 	NWF$('.nf-date-picker').datepicker('option',{yearRange: '-100:+0',});
