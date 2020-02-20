@@ -1,0 +1,50 @@
+<!-- HTML object where the site contents will be displayed -->
+<div id='siteContentsResults'></div>
+
+<!-- Import jQuery -->
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<!-- JavaScript -->
+<script>
+	/* Create Lists & Libraries Title */
+	$('#siteContentsResults').append('<strong>LISTS & LIBRARIES</strong><br><br>');
+
+	/* Retrieve HTML from Site Contents page of CURRENT site */
+	$.get( "../_layouts/15/viewlsts.aspx", function(siteContentsHTML) {
+
+		/* Trim HTML results to use only table with 'appsTable' ID */
+		siteContentsHTML = $('#appsTable',siteContentsHTML);
+
+		/* For each element inside the table that is a <div> with an ID attribute and the 'ms-v1-appinfo' class... */
+		$('div[id].ms-vl-appinfo',siteContentsHTML).each(function(){
+
+			/* Grab the list/library hyperlink data (URL and text) */
+			var linkData = $('#' + this.id + ' .ms-vl-apptitleouter a.ms-vl-apptitle',siteContentsHTML);
+
+			/* Grab the number of items and last last modified date metadata */
+			var metaData = $('#' + this.id + ' div.ms-vl-appstatus',siteContentsHTML);
+
+			/* Create the list/library name and URL from the linkData variable */
+			var objName = '<a href=\'' + linkData.prop('href') + '\' target=\'_blank\'>' + linkData.text().trim() + '</a> - ';
+
+			/* Append the linked name and metadata to the list */	
+			$('#siteContentsResults').append(
+
+				/* Create and format the list item */
+				'<li>' + objName + metaData[0].innerHTML.trim() + ' - ' + metaData[1].innerHTML.trim().replace('Modified','') + '</li>');
+		});
+
+		/* Create Sites Title */
+		$('#siteContentsResults').append('<p>&nbsp;</p><strong>SITES</strong><br><br>');
+
+		/* For each site... */
+		$('.ms-itmhover .ms-vb-icon a:not(.ms-vl-siteicon)',siteContentsHTML).each(function(){
+
+			/* Append the linked site name to the list */	
+			$('#siteContentsResults').append(
+
+				/* Create and format the list item */
+				'<li><a href=\'' + $(this).prop('href') + '\' target=\'_blank\'>' + $(this).text().trim() + '</a></li>');
+		});
+	});
+</script>
