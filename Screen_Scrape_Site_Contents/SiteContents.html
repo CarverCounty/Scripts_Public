@@ -1,50 +1,119 @@
+<!-- Label, text field, submit button, and Copy to Clipboard button -->
+<label for='sitePath'>Site Path </label>
+<input type='text' id='sitePath' style='width:500px;' placeholder='Leave blank for current site'><br><br>
+<button onclick='querySite($(sitePath).val()); return false;' style='margin-left:0px!important;'>Submit</button>
+<button onclick='copyToClipboard(document.getElementById("siteContentsResults")); return false;' style='margin-left:0px!important;'>Copy to Clipboard</button><br><hr>
+
 <!-- HTML object where the site contents will be displayed -->
 <div id='siteContentsResults'></div>
 
 <!-- Import jQuery -->
-<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src='//code.jquery.com/jquery-3.3.1.min.js'></script>
 
 <!-- JavaScript -->
 <script>
-	/* Create Lists & Libraries Title */
-	$('#siteContentsResults').append('<strong>LISTS & LIBRARIES</strong><br><br>');
+	/* Function to be called when Submit button is clicked */
+	function querySite(site){
 
-	/* Retrieve HTML from Site Contents page of CURRENT site */
-	$.get( "../_layouts/15/viewlsts.aspx", function(siteContentsHTML) {
+		/* If text in textbox exists and last four characters equal 'aspx' */
+		if(site && site.substr(site.length - 4) == 'aspx'){
+		
+			/* Write message to page and exit function */
+			$('#siteContentsResults').html('The site path is invalid.<br>Please ensure the path ends with the site name.');
+			return;
+		}
 
-		/* Trim HTML results to use only table with 'appsTable' ID */
-		siteContentsHTML = $('#appsTable',siteContentsHTML);
+		/* Clear page content */
+		$('#siteContentsResults').html('');
 
-		/* For each element inside the table that is a <div> with an ID attribute and the 'ms-v1-appinfo' class... */
-		$('div[id].ms-vl-appinfo',siteContentsHTML).each(function(){
+		/* If text in textbox exists, append Site Contents path */
+		if(site){path = site + '/_layouts/15/viewlsts.aspx';}
 
-			/* Grab the list/library hyperlink data (URL and text) */
-			var linkData = $('#' + this.id + ' .ms-vl-apptitleouter a.ms-vl-apptitle',siteContentsHTML);
+		/* Else, if textbox is blank... */
+		else{
 
-			/* Grab the number of items and last last modified date metadata */
-			var metaData = $('#' + this.id + ' div.ms-vl-appstatus',siteContentsHTML);
+			/* Set path to current site */
+			path = '../_layouts/15/viewlsts.aspx';
+			site = 'CURRENT';
+		}
+		
+		/* Create Site itle and link to Site Contents */
+		$('#siteContentsResults').append('<strong>SITE:</strong> <a href="' + path + '" target="_blank" title="Site Contents">' + site + '</a><br><br>');
 
-			/* Create the list/library name and URL from the linkData variable */
-			var objName = '<a href=\'' + linkData.prop('href') + '\' target=\'_blank\'>' + linkData.text().trim() + '</a> - ';
+		/* Declare string variable to hold list of results */
+		var results = '';
+		
+		/* Retrieve HTML from Site Contents page of CURRENT site */
+		var request = $.get(path);
+		
+		/* If retrieval succeeds... */
+		request.then(function(siteContentsHTML) {
 
-			/* Append the linked name and metadata to the list */	
-			$('#siteContentsResults').append(
+			/* Trim HTML results to use only table with 'appsTable' ID */
+			siteContentsHTML = $('#appsTable',siteContentsHTML);
+
+			/* For each element inside the table that is a <div> with an ID attribute and the 'ms-v1-appinfo' class... */
+			$('div[id].ms-vl-appinfo',siteContentsHTML).each(function(){
+
+				/* Grab the list/library hyperlink data (URL and text) */
+				var linkData = $('#' + this.id + ' .ms-vl-apptitleouter a.ms-vl-apptitle',siteContentsHTML);
+
+				/* Grab the number of items and last last modified date metadata */
+				var metaData = $('#' + this.id + ' div.ms-vl-appstatus',siteContentsHTML);
+
+				/* Create the list/library name and URL from the linkData variable */
+				var objName = '<a href=\'' + linkData.prop('href') + '\' target=\'_blank\'>' + linkData.text().trim() + '</a> - ';
 
 				/* Create and format the list item */
-				'<li>' + objName + metaData[0].innerHTML.trim() + ' - ' + metaData[1].innerHTML.trim().replace('Modified','') + '</li>');
+				results += '<li>' + objName + metaData[0].innerHTML.trim() + ' - ' + metaData[1].innerHTML.trim().replace('Modified','') + '</li>';
+			});
+
+			/* If results exist, write Lists & Libraries title and results to page */
+			if(results){$('#siteContentsResults').append('<strong>LISTS & LIBRARIES</strong><br><br>' + results);}
+
+			/* Reset results variable */
+			results = '';
+
+			/* For each site... */
+			$('.ms-itmhover .ms-vb-icon a:not(.ms-vl-siteicon)',siteContentsHTML).each(function(){
+
+				/* Build and format the list item */
+				results += '<li><a href=\'' + $(this).prop('href') + '\' target=\'_blank\'>' + $(this).text().trim() + '</a></li>';
+			});
+
+			/* If results exist, write Sites title and results to page */
+			if(results){$('#siteContentsResults').append('<p>&nbsp;</p><strong>SITES</strong><br><br>' + results);}
 		});
-
-		/* Create Sites Title */
-		$('#siteContentsResults').append('<p>&nbsp;</p><strong>SITES</strong><br><br>');
-
-		/* For each site... */
-		$('.ms-itmhover .ms-vb-icon a:not(.ms-vl-siteicon)',siteContentsHTML).each(function(){
-
-			/* Append the linked site name to the list */	
-			$('#siteContentsResults').append(
-
-				/* Create and format the list item */
-				'<li><a href=\'' + $(this).prop('href') + '\' target=\'_blank\'>' + $(this).text().trim() + '</a></li>');
+		
+		/* If retrieval fails... */
+		request.fail(function(jqXHR, textStatus, errorThrown) {
+		
+			/* Write message to page */
+			$('#siteContentsResults').html('The site path is invalid.<br>Please ensure the path ends with the site name.');
 		});
-	});
+	}
+
+	/* Function called when Copy to Clipboard button clicked - Copied from another solution */
+	function copyToClipboard(el) {
+        var body = document.body, range, sel;
+        if (document.createRange && window.getSelection) {
+            range = document.createRange();
+            sel = window.getSelection();
+            sel.removeAllRanges();
+            try {
+                range.selectNodeContents(el);
+                sel.addRange(range);
+            } catch (e) {
+                range.selectNode(el);
+                sel.addRange(range);
+            }
+            document.execCommand('copy');
+
+        } else if (body.createTextRange) {
+            range = body.createTextRange();
+            range.moveToElementText(el);
+            range.select();
+            range.execCommand('Copy');
+        }
+    }
 </script>
