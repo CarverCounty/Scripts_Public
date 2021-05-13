@@ -1,0 +1,158 @@
+swagger: '2.0'
+info: {title: Clarizen, description: "Connector for Clarizen's API. \nClarizen Website:\
+    \ https://www.clarizen.com/\nClarizen API: https://api2.clarizen.com/V2.0/services/",
+  version: '1.0'}
+host: api2.clarizen.com
+basePath: /v2.0/services
+tags:
+- {name: authentication, description: 'Provides the basic calls to authenticate with
+    the REST API, get session information and access the correct data center where
+    your organization is located.'}
+- {name: data, description: 'Provides the calls to create, update, retrieve and delete
+    objects in Clarizen as well as to query and search for objects.'}
+- {name: metadata, description: 'Provides information about the Clarizen data model
+    including supported entities, entity fields and data types, as well as relations
+    between entities.'}
+schemes: [https]
+consumes: [application/json]
+produces: [application/json]
+paths:
+  /authentication/getSessionInfo:
+    get:
+      tags: [authentication]
+      summary: Get Session Info
+      responses:
+        default:
+          description: default
+          schema:
+            type: object
+            properties:
+              customInfo:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fieldName: {type: string, description: fieldName}
+                    value: {type: string, description: value}
+                description: Array of customInfo
+              sessionId: {type: string, description: sessionId}
+              userId: {type: string, description: userId}
+              organizationId: {type: string, description: organizationId}
+              serverTime: {type: string, description: serverTime}
+              licenseType: {type: string, description: licenseType}
+      operationId: getSessionInfo
+      x-ms-visibility: internal
+      description: Returns information about the current session. Can be used for
+        testing connection to API.
+  /data/createAndRetrieve:
+    post:
+      tags: [data]
+      summary: Create Project Request
+      operationId: createAndRetrieve
+      produces: [application/json]
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            entity:
+              type: object
+              properties:
+                Id: {type: string, description: 'Clarizen System Entity Name. Example:
+                    /EnhancementRequest', title: Clarizen Entity, default: /EnhancementRequest,
+                  x-ms-visibility: advanced}
+                Title: {type: string, description: Name of the Project Requested,
+                  title: Project Name, x-ms-visibility: important}
+                Description: {type: string, description: Detailed description of the
+                    Project Requested, title: '', x-ms-visibility: important}
+                C_ReasonforProject: {type: string, description: Detailed description
+                    of the reason for the project request, title: Reason for Project,
+                  x-ms-visibility: important}
+                C_Sponsor: {type: string, description: 'Use the Find User action to
+                    query user. Example: /User/ab12345c-6d78-90e1-23f4-g5hi6789jk0l',
+                  title: Project Sponsor, x-ms-visibility: important}
+              description: entity
+              required: [Id, Title, Description, C_ReasonforProject, C_Sponsor]
+            fields:
+              type: array
+              items: {type: string, title: Fields, x-ms-visibility: advanced, description: 'Field
+                  name of value to return. Example: Title', default: Title}
+              title: Field values to return
+              description: fields
+              x-ms-visibility: advanced
+          required: [entity]
+          x-ms-visibility: important
+        x-ms-visibility: important
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              entity:
+                type: object
+                properties:
+                  id: {type: string, description: ID of created record}
+                description: entity
+        '400': {description: Invalid Order}
+        '404': {description: Resource not found}
+      x-ms-visibility: important
+      description: Create a new project request in Clarizen to be reviewed by the
+        Project Management team.
+  /data/findUserQuery:
+    post:
+      tags: [data]
+      summary: Find User
+      operationId: findUser
+      produces: [application/json]
+      parameters:
+      - name: body
+        in: body
+        required: false
+        schema:
+          type: object
+          properties:
+            email: {type: string, description: Email address of a user in Clarizen,
+              title: Email Address}
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              entities:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: {type: string, description: ID and path within User entity,
+                      title: Clarizen User ID, x-ms-visibility: important}
+                description: Array of Users Found
+                title: User(s)
+              paging:
+                type: object
+                properties:
+                  from: {type: integer, format: int32, description: from, title: '',
+                    x-ms-visibility: internal}
+                  limit: {type: integer, format: int32, description: limit, title: '',
+                    x-ms-visibility: internal}
+                  hasMore:
+                    type: boolean
+                    description: hasMore
+                    title: ''
+                    x-ms-visibility: internal
+                    enum: ['', 'true', 'false']
+                description: paging
+        '400': {description: Invalid Order}
+        '404': {description: Resource not found}
+      x-ms-visibility: important
+      description: Search for user in Clarizen.
+definitions: {}
+parameters: {}
+responses: {}
+securityDefinitions:
+  API Key: {type: apiKey, in: header, name: Authorization}
+security:
+- API Key: []
