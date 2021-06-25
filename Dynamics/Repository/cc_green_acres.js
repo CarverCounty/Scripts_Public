@@ -2,6 +2,7 @@
    Source: https://www.linkedin.com/pulse/add-icons-view-columns-dynamics-crm-365-ahmad-sammour/ 
    Filename: cc_green_acres
    Location: Web Resources
+   Tracking Changes: https://github.com/CarverCounty/Scripts_Public/blob/master/Dynamics/Repository/cc_green_acres.js
 */
 
 function RowInfo(rowVal, userlcid) {
